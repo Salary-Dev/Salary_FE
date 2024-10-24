@@ -1,8 +1,8 @@
-import styled from "styled-components/native";
-import SignInCharacter from "../assets/SignInCharacter.png";
-import SignInText_SALARY from "../assets/SignInText_SALARY.png";
-import KakaoLoginBtn from "../assets/KakaoLoginBtn.png";
-import NaverLoginBtn from "../assets/NaverLoginBtn.png";
+import styled from 'styled-components/native';
+import SignInCharacter from '../assets/SignInCharacter.png';
+import SignInText_SALARY from '../assets/SignInText_SALARY.png';
+import KakaoLoginBtn from '../assets/LoginBtns/Kakao_Login.png';
+import NaverLoginBtn from '../assets/LoginBtns/Naver_Login.png';
 
 const ViewContainer = styled.View`
   flex: 1;
@@ -58,19 +58,21 @@ const LoginBtnContainer = styled.View`
   margin-top: 180px;
   justify-content: center;
   align-items: center;
-  gap: 30px;
+  gap: 12px;
 `;
 
 const TouchableImage = styled.TouchableOpacity``;
 
 const KakaoBtn = styled.Image`
+  resize-mode: contain;
   width: 300px;
-  height: 60px;
+  height: 52px;
 `;
 
 const NaverBtn = styled.Image`
+  resize-mode: contain;
   width: 300px;
-  height: 60px;
+  height: 52px;
 `;
 
 function SignInScreen({ onEnter }) {

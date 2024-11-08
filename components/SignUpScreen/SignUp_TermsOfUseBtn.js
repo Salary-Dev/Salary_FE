@@ -1,8 +1,8 @@
 import { Pressable } from "react-native";
 import styled from "styled-components/native";
-import CheckBtn_Off from "../assets/img/signUpScreen/CheckBtn_Off.png";
-import CheckBtn_On from "../assets/img/signUpScreen/CheckBtn_On.png";
-import ArrowBtn from "../assets/img/signUpScreen/ArrowBtn.png";
+import CheckBtn_Off from '../../assets/img/signUpScreen/CheckBtn_Off.png'
+import CheckBtn_On from "../../assets/img/signUpScreen/CheckBtn_On.png";
+import ArrowBtn from "../../assets/img/signUpScreen/ArrowBtn.png";
 
 const TermsOfUseBtnContainer = styled.Pressable`
   width: 100%;

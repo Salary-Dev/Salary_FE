@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   Modal,
   View,
@@ -6,32 +6,34 @@ import {
   ScrollView,
   ActivityIndicator,
   TouchableOpacity,
-} from "react-native";
-import styled, { css } from "styled-components";
-import colors from "../styles/colors";
-import fonts from "../styles/fonts";
-import TodaySalaryEdu_Modal from "../components/todaySalaryEduScreen/TodaySalaryEdu_Modal";
-import TodaySalaryEdu_MeanAndExample from "../components/todaySalaryEduScreen/TodaySalaryEdu_MeanAndExample";
-import TodaySalaryEdu_ScrollDownAnim from "../components/todaySalaryEduScreen/TodaySalaryEdu_ScrollDownAnim";
-import { Ionicons } from "@expo/vector-icons";
-import HighlightText from "react-native-highlight-underline-text";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import { todayWordSelector } from "../Recoil/todayAttendanceDetail";
-import axios from "axios";
-import { BASE_URL } from "@env";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { todayAttendanceState } from "../Recoil/todayAttendanceState";
-import WordToggle from "../common/WordToggle";
-import * as Linking from "expo-linking";
+  Pressable,
+} from 'react-native';
+import styled, { css } from 'styled-components';
+import colors from '../styles/colors';
+import fonts from '../styles/fonts';
+import TodaySalaryEdu_Modal from '../components/todaySalaryEduScreen/TodaySalaryEdu_Modal';
+import TodaySalaryEdu_MeanAndExample from '../components/todaySalaryEduScreen/TodaySalaryEdu_MeanAndExample';
+import TodaySalaryEdu_ScrollDownAnim from '../components/todaySalaryEduScreen/TodaySalaryEdu_ScrollDownAnim';
+import { Ionicons } from '@expo/vector-icons';
+import HighlightText from 'react-native-highlight-underline-text';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { todayWordSelector } from '../Recoil/todayAttendanceDetail';
+import axios from 'axios';
+import { BASE_URL } from '@env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { todayAttendanceState } from '../Recoil/todayAttendanceState';
+import WordToggle from '../common/WordToggle';
+import * as Linking from 'expo-linking';
 import {
   isSavedSelector,
   todaySalaryContent,
-} from "../Recoil/todaySalaryContent";
-import parseStoryString from "../functions/parseStoryString";
+} from '../Recoil/todaySalaryContent';
+import parseStoryString from '../functions/parseStoryString';
+import LottieView from 'lottie-react-native';
 
 const RootContainer = styled.View`
   flex: 1;
-  width: "100%";
+  width: '100%';
   background-color: ${colors.Grayscale_white};
 `;
 
@@ -40,7 +42,7 @@ const BoldTitle = styled(fonts.H4SB)`
 `;
 
 const Title = styled(fonts.H4M)`
-  font-family: "Pretendard-Medium";
+  font-family: 'Pretendard-Medium';
   color: ${colors.Grayscale_100};
 `;
 
@@ -140,7 +142,7 @@ const NewsContentContainer = styled.View`
 // 임시
 const NewsContentBox = styled.View`
   /* background-color: #c2c2c2; */
-  background-color: #faebd7;
+  background-color: #b0b6aa;
   border-radius: 3px;
   align-items: center;
 `;
@@ -151,6 +153,17 @@ const NewsText = styled(fonts.Caption2)`
 
   letter-spacing: 0.24px;
   padding: 19px 44px 52px 21px;
+`;
+
+const GoToNewsText = styled.Text`
+  font-size: 16px;
+  font-weight: 600;
+`;
+
+const GoToNewsContainer = styled.View`
+  flex: 1;
+  flex-direction: row;
+  align-items: center;
 `;
 
 // 섹션 4) 학습 완료와 모달
@@ -208,8 +221,8 @@ function TodaySalaryEduScreen({ route }) {
   ]);
 
   // 임시 변수 사용
-  const news1 = "기술주 중심 나스닥 또 급락…신규 고용 시장 기대 못미쳐";
-  const news2 = "美 고용지표 악화에 증시 급락…AI 빅테크 주가 일제히 하락";
+  const news1 = '기술주 중심 나스닥 또 급락…신규 고용 시장 기대 못미쳐';
+  const news2 = '美 고용지표 악화에 증시 급락…AI 빅테크 주가 일제히 하락';
 
   function onBookmarkToggle() {
     fetchBookMarkState(!bookMark);
@@ -226,7 +239,7 @@ function TodaySalaryEduScreen({ route }) {
           setBookMark(true);
           if (wordData.word_id === todaySalary.word_id)
             setBookmarkTodaySalary(true); // 오늘의 샐러리와 일치할 때에만
-          if (res.status === 200) console.log("북마크 등록 완료");
+          if (res.status === 200) console.log('북마크 등록 완료');
         } catch (error) {
           console.log(error);
         }
@@ -238,7 +251,7 @@ function TodaySalaryEduScreen({ route }) {
           setBookMark(false);
           if (wordData.word_id === todaySalary.word_id)
             setBookmarkTodaySalary(false); //오늘의 샐러리와 일치할 때에만
-          if (res.status === 200) console.log("북마크 삭제 완료");
+          if (res.status === 200) console.log('북마크 삭제 완료');
         } catch (error) {
           console.log(error);
         }
@@ -251,7 +264,7 @@ function TodaySalaryEduScreen({ route }) {
       const res = await axios.post(
         `${BASE_URL}/today-word/update-status?word_id=${wordData.word_id}`
       );
-      console.log("단어 학습 완료 api post", res.status);
+      console.log('단어 학습 완료 api post', res.status);
       return true;
     } catch (error) {
       console.log(error);
@@ -269,7 +282,7 @@ function TodaySalaryEduScreen({ route }) {
       setTodayWordState(true); // 전역 상태 관리
       setIsModalVisible(true); // 모달 상태 관리
       setAttendanceState((prev) => prev + 3); // 3을 더해주어 salary done 표시
-      console.log("정상적으로 처리 완료함");
+      console.log('정상적으로 처리 완료함');
     }
   }
 
@@ -291,7 +304,7 @@ function TodaySalaryEduScreen({ route }) {
           setLoading(false);
         }
       } catch (error) {
-        console.log("에러", error);
+        console.log('에러', error);
       }
     }
 
@@ -307,7 +320,7 @@ function TodaySalaryEduScreen({ route }) {
     }
 
     // 단어 검색을 통해 들어온 경우 데이터를 받아옴
-    if (route.params.type !== "todaySalary") fetchWordData();
+    if (route.params.type !== 'todaySalary') fetchWordData();
     else fetchTodaySalary();
   }, [route.params.type]);
 
@@ -320,7 +333,7 @@ function TodaySalaryEduScreen({ route }) {
       layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
 
     if (
-      route.params.type === "todaySalary" &&
+      route.params.type === 'todaySalary' &&
       !wordState &&
       isBottom &&
       !loading
@@ -331,6 +344,9 @@ function TodaySalaryEduScreen({ route }) {
 
   // 모달 관리
   const [isModalVisible, setIsModalVisible] = useState(false);
+  // 임시
+  const [isTopNewsAvailable, setIsTopNewsAvailable] = useState(false);
+  const [isBottomNewsAvailable, setIsBottomNewsAvailable] = useState(false);
 
   function openModal() {
     setIsModalVisible(true);
@@ -379,8 +395,8 @@ function TodaySalaryEduScreen({ route }) {
                 underlineSize={10}
                 underlineColor={colors.Primary_100}
                 textStyle={{
-                  color: "#121212",
-                  fontFamily: "Pretendard-Bold",
+                  color: '#121212',
+                  fontFamily: 'Pretendard-Bold',
                   fontSize: 26,
                   lineHeight: 26,
                 }}
@@ -445,8 +461,8 @@ function TodaySalaryEduScreen({ route }) {
                 underlineSize={10}
                 underlineColor={colors.Primary_100}
                 textStyle={{
-                  color: "#121212",
-                  fontFamily: "Pretendard-Medium",
+                  color: '#121212',
+                  fontFamily: 'Pretendard-Medium',
                   fontSize: 20,
                   lineHeight: 20,
                 }}
@@ -455,9 +471,26 @@ function TodaySalaryEduScreen({ route }) {
               <Title style={{ lineHeight: 20 }}>관련 뉴스 확인하기</Title>
             </NewsTitleContainer>
             <NewsContentContainer>
-              <TouchableOpacity onPress={() => link(wordData.articles[0].url)}>
+              <Pressable
+                onPressIn={() => setIsTopNewsAvailable(true)}
+                onPressOut={() => setIsTopNewsAvailable(false)}
+                onPress={() => link(wordData.articles[0].url)}
+              >
                 <NewsContentBox>
-                  <NewsText>{wordData.articles[0].title}</NewsText>
+                {!isTopNewsAvailable ? (
+                    <NewsText>{wordData.articles[0].title}</NewsText>
+                  ) : (
+                    <GoToNewsContainer>
+                      <GoToNewsText>뉴스 보러 가기</GoToNewsText>
+                      <LottieView
+                        style={{ width: 30, height: 30, marginVertical: 30 }}
+                        source={require('../assets/animations/News.json')}
+                        autoPlay
+                        loop={true}
+                      />
+                    </GoToNewsContainer>
+                  )}
+
                   {/* <Text
                     style={{
                       fontSize: 20,
@@ -469,10 +502,24 @@ function TodaySalaryEduScreen({ route }) {
                     바로가기
                   </Text> */}
                 </NewsContentBox>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => link(wordData.articles[1].url)}>
+              </Pressable>
+              <Pressable onPressIn={() => setIsBottomNewsAvailable(true)}
+                onPressOut={() => setIsBottomNewsAvailable(false)}onPress={() => link(wordData.articles[1].url)}>
                 <NewsContentBox>
-                  <NewsText>{wordData.articles[1].title}</NewsText>
+                {!isBottomNewsAvailable ? (
+                    <NewsText numberOfLines={1} ellipsizeMode='tail'>{wordData.articles[1].title}</NewsText>
+                  ) : (
+                    <GoToNewsContainer>
+                      <GoToNewsText>뉴스 보러 가기</GoToNewsText>
+                      <LottieView
+                        style={{ width: 30, height: 30, marginVertical: 30 }}
+                        source={require('../assets/animations/News.json')}
+                        autoPlay
+                        loop={true}
+                      />
+                    </GoToNewsContainer>
+                  )}
+
                   {/* <Text
                   style={{
                     fontSize: 14,
@@ -484,17 +531,17 @@ function TodaySalaryEduScreen({ route }) {
                   기사 관련 이미지(배경)
                 </Text> */}
                 </NewsContentBox>
-              </TouchableOpacity>
+              </Pressable>
             </NewsContentContainer>
           </NewsContainer>
           {/* 4. 끝까지 내려 => 모달 올리기 & 학습 완료 api 호출 */}
-          {route.params.type === "todaySalary" ? (
+          {route.params.type === 'todaySalary' ? (
             <EduDoneContainer>
               {!wordState ? <TodaySalaryEdu_ScrollDownAnim /> : <></>}
               <EduDoneText>
                 {!wordState
-                  ? "끝까지 내리면 오늘의 샐러리 한조각 학습이 완료돼요!"
-                  : "오늘의 학습을 완료했어요!"}
+                  ? '끝까지 내리면 오늘의 샐러리 한조각 학습이 완료돼요!'
+                  : '오늘의 학습을 완료했어요!'}
               </EduDoneText>
             </EduDoneContainer>
           ) : (

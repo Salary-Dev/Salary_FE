@@ -121,7 +121,7 @@ function VocaSearchResultScreen({ navigation, route }) {
         <Title_Normal> 에 대한 검색 결과에요</Title_Normal>
       </TitleContainer>
       <SubTitle>
-        검색 결과가 <SubTitle_Num>3건</SubTitle_Num> 있어요.
+        검색 결과가 <SubTitle_Num>{route.params.renderedItems.length}건</SubTitle_Num> 있어요.
       </SubTitle>
       <CenteredView>
         <ResultList

@@ -120,9 +120,10 @@ export default function App() {
     <RecoilRoot>
       <NavigationContainer>
         <Stack.Navigator
-        // screenOptions={{
-        //   headerShown: false,
-        // }}
+          screenOptions={{
+            headerBackTitleVisible: false,
+            headerBackTitleStyle: { fontSize: 1 },
+          }}
         >
           {!isLoggedIn ? (
             <>

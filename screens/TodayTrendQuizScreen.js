@@ -9,8 +9,8 @@ import axios from "axios";
 import { BASE_URL } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import getKoreaFormattedDate from "../functions/getKoreaForamttedDate";
-import LottieView from 'lottie-react-native';
-import fonts from '../styles/fonts';
+import LottieView from "lottie-react-native";
+import fonts from "../styles/fonts";
 
 const ViewContainer = styled.SafeAreaView`
   background-color: white;
@@ -72,7 +72,7 @@ const AnswerBox = styled.Pressable`
   width: 100%;
   min-height: 60px;
   border-radius: 6px;
-  background-color: ${(props) => (!props.isSelected ? '#ffffff' : '#313131')};
+  background-color: ${(props) => (!props.isSelected ? "#ffffff" : "#313131")};
   padding: 8px 12px;
   margin-bottom: 14px;
 `;
@@ -163,7 +163,7 @@ function TodayTrendQuizScreen() {
   const fetchTrendQuizData = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/trend-quiz`);
-      console.log(res.data);
+      console.log("트렌드", res.data);
       setTrendQuizData(res.data);
       await AsyncStorage.setItem(
         "todayTrendQuizData",
@@ -178,6 +178,7 @@ function TodayTrendQuizScreen() {
   useEffect(() => {
     const checkAndFetchData = async () => {
       try {
+        AsyncStorage.removeItem("lastFetchedDate");
         const lastFetchedDate = await AsyncStorage.getItem("lastFetchedDate");
 
         if (lastFetchedDate !== getKoreaFormattedDate()) {
@@ -217,8 +218,7 @@ function TodayTrendQuizScreen() {
         {
           isCorrect: false,
           isSelected: false,
-          content:
-            `${trendQuizData.incorrect[2]}`,
+          content: `${trendQuizData.incorrect[2]}`,
         },
       ];
       setAnswersState(shuffle(InitialAnswers));
@@ -353,8 +353,15 @@ function TodayTrendQuizScreen() {
         </QuizViewContainer>
       ) : (
         <LoadingIndicator>
-        <LottieView style={{width: 300, height: 300}} source={require('../assets/animations/Loading.json')} autoPlay loop={true}/><LoadingText>트렌드 퀴즈{'\n'}불러오는 중..</LoadingText>
-      </LoadingIndicator>)}
+          <LottieView
+            style={{ width: 300, height: 300 }}
+            source={require("../assets/animations/Loading.json")}
+            autoPlay
+            loop={true}
+          />
+          <LoadingText>트렌드 퀴즈{"\n"}불러오는 중..</LoadingText>
+        </LoadingIndicator>
+      )}
     </ViewContainer>
   );
 }

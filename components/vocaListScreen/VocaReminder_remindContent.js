@@ -100,7 +100,7 @@ function VocaReminder_remindContent({
                 index={wordIndex++}
                 word={item.word}
                 mean={item.mean}
-                key={item.word_id}
+                key={item.word}
               />
             ) : (
               <></>

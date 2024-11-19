@@ -65,11 +65,17 @@ const MeanContainer = styled.View`
 `;
 
 const BookMarkContainer = styled.TouchableOpacity`
+  height: 60px;
+  width: 80px;
   position: absolute;
-  top: 12px;
-  right: 15px;
+  top: 0px;
+  right: 0px;
 
   gap: 3px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 // 섹션 2) 스토리텔링
@@ -207,7 +213,7 @@ function TodaySalaryEduScreen({ route }) {
   // 전역으로 오늘의 todaysalary 학습 상태를 관리
   const wordState = useRecoilValue(todayWordSelector);
   const setTodayWordState = useSetRecoilState(todayWordSelector);
-  // attendance state를 업데이트해주기 위해 불러옴
+  // 전역 attendance state를 업데이트해주기 위해 불러옴
   const [attendaceState, setAttendanceState] =
     useRecoilState(todayAttendanceState);
 
@@ -225,9 +231,7 @@ function TodaySalaryEduScreen({ route }) {
   const [bookMark, setBookMark] = useState(false);
 
   // 알맞게 렌더링되도록 함
-  useEffect(() => {
-    console.log(wordData.articles);
-  }, [
+  useEffect(() => {}, [
     wordData,
     storyTelling,
     bookMark,
@@ -241,38 +245,41 @@ function TodaySalaryEduScreen({ route }) {
   const news2 = "美 고용지표 악화에 증시 급락…AI 빅테크 주가 일제히 하락";
 
   function onBookmarkToggle() {
+    console.log("토글 전 북마크 상태", bookMark);
     fetchBookMarkState(!bookMark);
   }
 
   async function fetchBookMarkState(tmpState) {
-    if (wordData.isSaved !== tmpState) {
-      if (tmpState) {
-        // tmpState로 바꾸겠다
-        try {
-          const res = await axios.post(
-            `${BASE_URL}/wordbook?word_id=${wordData.word_id}`
-          );
-          setBookMark(true);
-          if (wordData.word_id === todaySalary.word_id)
-            setBookmarkTodaySalary(true); // 오늘의 샐러리와 일치할 때에만
-          if (res.status === 200) console.log("북마크 등록 완료");
-        } catch (error) {
-          console.log(error);
-        }
-      } else {
-        try {
-          const res = await axios.delete(
-            `${BASE_URL}/wordbook?word_id=${wordData.word_id}`
-          );
-          setBookMark(false);
-          if (wordData.word_id === todaySalary.word_id)
-            setBookmarkTodaySalary(false); //오늘의 샐러리와 일치할 때에만
-          if (res.status === 200) console.log("북마크 삭제 완료");
-        } catch (error) {
-          console.log(error);
-        }
+    // tmpState로 바꾸겠다
+    // if (wordData.isSaved !== tmpState) {
+    console.log("tmpState: ", tmpState);
+    if (tmpState) {
+      // tmpState로 바꾸겠다
+      try {
+        const res = await axios.post(
+          `${BASE_URL}/wordbook?word_id=${wordData.word_id}`
+        );
+        setBookMark(true);
+        if (wordData.word_id === todaySalary.word_id)
+          setBookmarkTodaySalary(true); // 오늘의 샐러리와 일치할 때에만
+        if (res.status === 200) console.log("북마크 등록 완료");
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      try {
+        const res = await axios.delete(
+          `${BASE_URL}/wordbook?word_id=${wordData.word_id}`
+        );
+        setBookMark(false);
+        if (wordData.word_id === todaySalary.word_id)
+          setBookmarkTodaySalary(false); //오늘의 샐러리와 일치할 때에만
+        if (res.status === 200) console.log("북마크 삭제 완료");
+      } catch (error) {
+        console.log(error);
       }
     }
+    // }
   }
 
   async function postWordAttendance() {
@@ -310,6 +317,7 @@ function TodaySalaryEduScreen({ route }) {
           `${BASE_URL}/words?word_id=${route.params.word_id}`
         );
         if (res.status === 200) {
+          console.log(res.data.example);
           setWordData(res.data);
           setStoryTelling([
             parseStoryString(res.data.story1),
@@ -405,7 +413,9 @@ function TodaySalaryEduScreen({ route }) {
         <RootContainer>
           {/* 1. 오늘의 샐러리 한조각 */}
           <MeanAndExampleContainer>
-            <BoldTitle>오늘의 샐러리 한조각</BoldTitle>
+            {wordData.word_id === todaySalary.word_id && (
+              <BoldTitle>오늘의 샐러리 한조각</BoldTitle>
+            )}
             <MeanContainer>
               <HighlightText
                 isFixed

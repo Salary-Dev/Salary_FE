@@ -21,6 +21,7 @@ import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { BASE_URL } from "@env";
 import { useRecoilState } from "recoil";
 import { isSavedSelector } from "../Recoil/todaySalaryContent";
+import { Shadow } from "react-native-shadow-2";
 
 const AdvertiseWrapper = styled.View`
   display: flex;
@@ -70,7 +71,12 @@ function VocaListScreen() {
   async function getData() {
     try {
       const res = await axios.get(`${BASE_URL}/wordbook`);
-      setVocaList(res.data);
+      if (res.status === 200) {
+        const orderedDate = res.data.sort(
+          (a, b) => new Date(b.like_date) - new Date(a.like_date)
+        );
+        setVocaList(orderedDate);
+      }
     } catch (error) {
       console.log("단어장 불러오기 오류", error);
     }
@@ -79,9 +85,9 @@ function VocaListScreen() {
   const nickname = "나야들기름";
 
   useEffect(() => {
-    // 북마크 단어장에 있는 단어를 받아옴
-    getData();
-  }, [isFocused, vocaList]);
+    // focus가 다시 되었을 때에만 다시 단어장 데이터를 받아옴.
+    if (isFocused) getData();
+  }, [isFocused]);
 
   useEffect(() => {
     getData();
@@ -114,18 +120,26 @@ function VocaListScreen() {
             }
           />
         </FlatListContainer>
-        <BtnContainer>
-          <fonts.Caption1 style={{ textAlign: "center" }}>
-            단어를 10개 이상 저장해야 리마인드를 진행할 수 있어요.
-          </fonts.Caption1>
-          <PrimaryBtn
-            type={vocaList.length >= 10 ? "active" : "deactive"}
-            text="단어 리마인드 하러 가기"
-            onPress={() => {
-              if (vocaList.length >= 10) navigation.navigate("VocaReminder");
-            }}
-          />
-        </BtnContainer>
+        <Shadow
+          distance={100}
+          startColor="rgba(255,255,255,1)"
+          endColor="rgba(255,255,255,0)"
+          offset={[0, 0]}
+          style={{ width: "100%" }}
+        >
+          <BtnContainer>
+            <fonts.Caption2 style={{ textAlign: "center" }}>
+              단어를 10개 이상 저장해야 리마인드를 진행할 수 있어요.
+            </fonts.Caption2>
+            <PrimaryBtn
+              type={vocaList.length >= 10 ? "active" : "deactive"}
+              text="단어 리마인드 하러 가기"
+              onPress={() => {
+                if (vocaList.length >= 10) navigation.navigate("VocaReminder");
+              }}
+            />
+          </BtnContainer>
+        </Shadow>
       </View>
     );
 }

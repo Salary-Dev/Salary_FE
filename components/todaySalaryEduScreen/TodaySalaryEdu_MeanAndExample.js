@@ -43,14 +43,25 @@ const ContentContainer = styled.View`
   padding: 18px 0px;
   justify-content: center;
   flex-direction: row;
-  flex-wrap: wrap;
   background-color: ${colors.Grayscale_white};
+  flex-wrap: wrap;
+  word-break: keep-all;
 `;
 
 const ContentText = styled(fonts.Body2M)`
-  box-sizing: content-box;
   flex-wrap: wrap;
-  word-break: break-all;
+  word-break: keep-all;
+`;
+
+const UnderlineView = styled.View`
+  border-bottom-color: ${colors.Primary_100};
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+
+  margin: 0;
+  padding: 0;
+
+  background-color: red;
 `;
 
 function TodaySalaryEdu_MeanAndExample({ word, mean, example }) {
@@ -68,6 +79,7 @@ function TodaySalaryEdu_MeanAndExample({ word, mean, example }) {
     if (!example.includes(word)) {
       return [];
     }
+    if (!example.includes(" ")) return [];
 
     // 단어를 기준으로 문장을 분리
     const parts = example.split(word);
@@ -109,22 +121,25 @@ function TodaySalaryEdu_MeanAndExample({ word, mean, example }) {
           <ContentContainer>
             <ContentText>{mean}</ContentText>
           </ContentContainer>
-        ) : splitted !== "" ? (
+        ) : splitted.length != 0 ? (
           <ContentContainer>
-            <ContentText>{splitted[0]}</ContentText>
-            <HighlightText
-              isFixed
-              underlineSize={10}
-              underlineColor={colors.Primary_100}
-              textStyle={{
-                color: "#121212",
-                fontFamily: "Pretendard-Medium",
-                fontSize: 14,
-                lineHeight: 22,
-              }}
-              text={word}
-            ></HighlightText>
-            <ContentText>{splitted[1]}</ContentText>
+            <ContentText>
+              {/* 일반 텍스트 앞부분 */}
+              {splitted[0]}
+              {/* 밑줄 텍스트 */}
+              <Text
+                style={{
+                  backgroundColor: colors.Primary_100,
+                  textDecorationLine: "underline", // 밑줄 스타일
+                  textDecorationColor: colors.Primary_100, // 밑줄 색상
+                  textDecorationStyle: "solid", // 밑줄 형태
+                }}
+              >
+                {word}
+              </Text>
+              {/* 일반 텍스트 뒷부분 */}
+              {splitted[1]}
+            </ContentText>
           </ContentContainer>
         ) : (
           <ContentContainer>

@@ -97,9 +97,6 @@ function HomeScreen() {
   const [attendanceState, setAttendanceState] =
     useRecoilState(todayAttendanceState);
 
-  // 오늘의 attendance id : step을 렌더링하기 위함
-  const [attendanceId, setAttendanceId] = useState(0);
-
   // 오늘의 attendance detail : word, trend, article의 boolean 값으로 구성
   const [attendanceDetail, setAttendanceDetail] = useRecoilState(
     todayAttendanceDetail
@@ -163,13 +160,12 @@ function HomeScreen() {
         console.log("1. attendance state: ", res.data);
         if (res.status === 200) {
           setAttendanceState(res.data.attendance_state); // 전역으로 저장
-          setAttendanceId(res.data.attendance_id);
         }
       } catch (error) {
         console.log(
-          `${BASE_URL}/attendance/status?attendance_date=${getKoreaFormattedDate()}`
+          "HomeScreen- 1번 attendance state(날짜별 출석률 조회 에러) ",
+          error
         );
-        console.log("1. attendance state: ", error);
       }
     }
 
@@ -187,7 +183,7 @@ function HomeScreen() {
           console.log("2. attendance today", res.data);
         }
       } catch (error) {
-        console.log("1번 에러", error);
+        console.log("HomeScreen- 2번 학습 과목 조회 에러", error);
       }
     }
 
@@ -203,10 +199,11 @@ function HomeScreen() {
         fetchTodayWordData({ word_id: res.data.word_id }); //data를 fetch하러
       }
     } catch (error) {
-      console.log("2번 에러", error);
+      console.log("HomeScreen- 3번 오늘 학습 단어 조회 에러", error);
     }
   }
 
+  // 4. 오늘의 단어 id에 대해 단어 상세 정보를 받아옴 (하루에 1번만 받아옴)
   async function fetchTodayWordData({ word_id }) {
     try {
       const res = await axios.get(`${BASE_URL}/words?word_id=${word_id}`);
@@ -226,30 +223,15 @@ function HomeScreen() {
         // });
       }
     } catch (error) {
-      console.log("에러", error);
+      console.log(
+        "HomeScreen- 4번 오늘의 word id 에 대한 word data get 에러",
+        error
+      );
     }
   }
 
-  // 오늘의 학습 단어를 최초 1회만 받아옴
-  // 첫 렌더링시 날짜별 출석률 조회를 통해 "오늘의" attendance_state를 받아온다. 이를 전역 상태에 반영해준다.
-  useEffect(() => {
-    async function getAttendanceStateData() {
-      try {
-        const res = await axios.get(
-          `${BASE_URL}/attendance/status?attendance_date=${getFormattedDate(
-            new Date()
-          )})`
-        );
-        console.log(res);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
-    getAttendanceStateData();
-  }, []);
-
   // focus 됐을 때에는 알아서 전역 상태 데이터를 가져옴.
+  // 소셜로그인 구현 후 주석 제거 -> 오늘의 샐러리 데이터를 하루에 한번만 가져오도록.
   useEffect(() => {
     const checkAndFetchData = async () => {
       // await AsyncStorage.removeItem("todaySalaryData"); 디버깅
@@ -286,12 +268,7 @@ function HomeScreen() {
   }
 
   // 리렌더링 관리
-  useEffect(() => {}, [
-    attendanceId,
-    attendanceDetail,
-    attendanceState,
-    todaySalary,
-  ]);
+  useEffect(() => {}, [attendanceDetail, attendanceState, todaySalary]);
 
   return (
     <SafeAreaView style={styles.rootScreen}>

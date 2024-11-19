@@ -1,4 +1,12 @@
-import { View, Text, SafeAreaView, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  Pressable,
+  ActivityIndicator,
+  StyleSheet,
+  Image,
+} from "react-native";
 import colors from "../styles/colors";
 import fonts from "../styles/fonts";
 import styled from "styled-components";
@@ -9,6 +17,8 @@ import { useNavigation } from "@react-navigation/native";
 import VocaReminder_HeaderRigRht from "../components/vocaListScreen/VocaReminder_HeaderRight";
 import VocaReminder_remindContent from "../components/vocaListScreen/VocaReminder_remindContent";
 import { BASE_URL } from "@env";
+import { Shadow } from "react-native-shadow-2";
+import VocaReminder_Loader from "../components/vocaListScreen/VocaReminder_Loader";
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -45,6 +55,7 @@ function VocaReminderScreen({ route }) {
 
   const [reminding, setReminding] = useState(false);
   const [remindWords, setRemindWords] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   // 클릭된 모르는 단어의 개수를 리턴
   function returnCountClicked() {
@@ -85,11 +96,15 @@ function VocaReminderScreen({ route }) {
   }
 
   useEffect(() => {
+    setLoading(true);
     // 매번 다른 리마인더 word를 받아오는지 확인 요망
     fetchRemindWords();
 
     // api 요청 후 데이터 가공하여 클릭 여부를 객체의 속성으로 추가
     addClickedState({ allTrue: false });
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
   }, []);
 
   // remind state 변경 후 헤더 변경 (오른쪽 요소 제거)
@@ -100,77 +115,90 @@ function VocaReminderScreen({ route }) {
       });
   }, [reminding]);
 
-  return (
-    <Container>
-      <TitleContainer>
-        {!reminding ? (
-          <fonts.H4SB style={{ color: "#000000" }}>
-            기억나는 단어가 있나요?
-          </fonts.H4SB>
-        ) : (
-          <fonts.H4SB>
-            오늘 몰랐던 단어는 총{" "}
-            <fonts.H4SB style={{ color: colors.text_green }}>
-              {returnCountClicked()}개
-            </fonts.H4SB>
-          </fonts.H4SB>
-        )}
-        {!reminding ? (
-          <fonts.Caption2 style={{ color: "#000000" }}>
-            기억나는 단어를 모두 선택해주세요.
-          </fonts.Caption2>
-        ) : (
-          <fonts.Caption2>
-            저번보다 <Text style={{ color: colors.text_green }}>2개</Text>의
-            단어를 더 기억하고 있어요! {"\n"}
-            체크하지 못한 단어들은 다시 한번 복습해볼까요?
-          </fonts.Caption2>
-        )}
-      </TitleContainer>
-      <ContentContainer>
-        {/* 2가지 reminding 상태에 따라 알맞은 content를 렌더링 */}
-        <VocaReminder_remindContent
-          data={remindWords}
-          reminding={reminding}
-          onClick={handleWordClick}
-          clickedWordCount={returnCountClicked()}
-        />
-      </ContentContainer>
-      <BtnContainer>
-        <Pressable
-          onPress={() => {
-            addClickedState({ allTrue: false }); // clickstate를 전부 false로
-            setReminding(!reminding);
-          }}
-        >
+  if (!loading)
+    return (
+      <Container>
+        <TitleContainer>
           {!reminding ? (
-            <fonts.Body2M
-              style={{
-                color: colors.Grayscale_80,
-                textAlign: "center",
-                textDecorationLine: "underline",
+            <fonts.H4SB style={{ color: "#000000" }}>
+              기억나는 단어가 있나요?
+            </fonts.H4SB>
+          ) : (
+            <fonts.H4SB>
+              오늘 몰랐던 단어는 총{" "}
+              <fonts.H4SB style={{ color: colors.text_green }}>
+                {returnCountClicked()}개
+              </fonts.H4SB>
+            </fonts.H4SB>
+          )}
+          {!reminding ? (
+            <fonts.Caption2 style={{ color: "#000000" }}>
+              기억나는 단어를 모두 선택해주세요.
+            </fonts.Caption2>
+          ) : (
+            <fonts.Caption2>
+              ddddd 저번보다{" "}
+              <Text style={{ color: colors.text_green }}>2개</Text>의 단어를 더
+              기억하고 있어요! {"\n"}
+              체크하지 못한 단어들은 다시 한번 복습해볼까요?
+            </fonts.Caption2>
+          )}
+        </TitleContainer>
+        <ContentContainer>
+          {/* 2가지 reminding 상태에 따라 알맞은 content를 렌더링 */}
+          <VocaReminder_remindContent
+            data={remindWords}
+            reminding={reminding}
+            onClick={handleWordClick}
+            clickedWordCount={returnCountClicked()}
+          />
+        </ContentContainer>
+        <Shadow
+          distance={50}
+          startColor="rgba(255,255,255,0.5)"
+          endColor="rgba(255,255,255,0)"
+          offset={[0, 0]}
+          style={{ width: "100%" }}
+        >
+          <BtnContainer>
+            <Pressable
+              onPress={() => {
+                addClickedState({ allTrue: false }); // clickstate를 전부 false로
+                setReminding(!reminding);
               }}
             >
-              모두 기억이 나지 않아요.
-            </fonts.Body2M>
-          ) : (
-            <></>
-          )}
-        </Pressable>
-        <PrimaryBtn
-          type="active"
-          text={!reminding ? "모두 선택했어요" : "단어 리마인드를 완료했어요"}
-          onPress={() => {
-            if (reminding)
-              navigation.navigate("BottomTab", {
-                screen: "VocabularyList",
-              });
-            else setReminding(!reminding);
-          }}
-        />
-      </BtnContainer>
-    </Container>
-  );
+              {!reminding ? (
+                <fonts.Body2M
+                  style={{
+                    color: colors.Grayscale_80,
+                    textAlign: "center",
+                    textDecorationLine: "underline",
+                  }}
+                >
+                  모두 기억이 나지 않아요.
+                </fonts.Body2M>
+              ) : (
+                <></>
+              )}
+            </Pressable>
+            <PrimaryBtn
+              type="active"
+              text={
+                !reminding ? "모두 선택했어요" : "단어 리마인드를 완료했어요"
+              }
+              onPress={() => {
+                if (reminding)
+                  navigation.navigate("BottomTab", {
+                    screen: "VocabularyList",
+                  });
+                else setReminding(!reminding);
+              }}
+            />
+          </BtnContainer>
+        </Shadow>
+      </Container>
+    );
+  else return <VocaReminder_Loader />;
 }
 
 export default VocaReminderScreen;

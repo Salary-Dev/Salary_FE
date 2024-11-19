@@ -125,7 +125,7 @@ function Home_DayAttendanceCircle({
       style={{ borderRadius: 15 }}
     >
       <TouchableContainer
-        onPress={() => onCalendarModalOpen()}
+        onPress={type === "calendar" ? () => {} : () => onCalendarModalOpen()}
         attendanceState={attendanceState}
         emptyState={emptyState}
         isToday={isToday}

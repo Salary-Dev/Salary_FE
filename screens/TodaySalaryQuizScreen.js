@@ -187,6 +187,7 @@ function TodaySalaryScreen() {
                   onChangeText={answerInputHandler}
                   value={tempAnswerInput}
                   ref={inputRef}
+                  returnKeyType="done" // enter 키 누르면 제출되도록
                 ></InputAnswer>
                 <InputHint>
                   {answerInputLth}/{tempAnsLth}자

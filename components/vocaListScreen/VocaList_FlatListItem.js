@@ -37,7 +37,14 @@ const ItemWrapper = styled.TouchableOpacity`
       : css``}
 `;
 
-const BookMarkContainer = styled.TouchableOpacity``;
+const BookMarkContainer = styled.TouchableOpacity`
+  height: 100%;
+  width: 40px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 function VocaList_FlatListItem({ word_id, word }) {
   const [bookMark, setBookMark] = useState(true);

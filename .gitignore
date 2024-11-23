@@ -39,3 +39,7 @@ yarn-error.*
 
 # vscode
 .vscode
+
+# native
+/android
+/ios

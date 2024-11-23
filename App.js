@@ -28,6 +28,11 @@ import { RecoilRoot } from "recoil";
 import arrowImg from "./assets/img/signUpScreen/ArrowBtn.png";
 import { useNavigation } from "@react-navigation/native";
 
+import {
+  GoogleSignin,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
+
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
 
@@ -92,11 +97,49 @@ function BottomTabNavigator() {
 }
 
 export default function App() {
+  const configGoogleSignIn = () => {
+    GoogleSignin.configure({
+      webClientId: '876108588654-js1ul4fdeveqoqkdakn6osv1jr0v1k2q.apps.googleusercontent.com',
+      offlineAccess: true,
+      scopes: ['profile', 'email'],
+    });
+  };
+
+  useEffect(() => {
+    configGoogleSignIn(); // will execute everytime the component mounts
+  }, []);
+
+  const signIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const res = await GoogleSignin.signIn();
+      console.log('GoogleSignin,signIn 함수의 리턴값', res);
+      // 지속적인 테스트를 위한 로그아웃 및 캐시 삭제 로직
+      // await GoogleSignin.signOut();
+      // await GoogleSignin.clearCachedAccessToken();
+      // 현재는 res 파일이 존재하는지의 여부로 메인페이지로의 전환을 하는데 
+      // 백엔드 개발이 완료되면 api 연동 추가해야 함
+      if (res) {
+        setIsLoggedIn(true);
+      }
+    } catch (error) {
+      switch (error.code) {
+        case statusCodes.SIGN_IN_CANCELLED:
+          console.error('User Sign In is required');
+          break;
+        case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+          console.error('Google Play Services are needed');
+          break;
+      }
+      console.log('Error', error.code);
+    }
+  };
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const HeaderButton = () => {
-    const navigation = useNavigation(); 
+    const navigation = useNavigation();
 
     return (
       <Pressable onPress={() => navigation.goBack(-1)}>
@@ -114,8 +157,7 @@ export default function App() {
   });
 
   function handleLogIn() {
-    setIsLoggedIn(true);
-    console.log("메인으로 갑니다");
+    signIn();
   }
 
   useEffect(() => {

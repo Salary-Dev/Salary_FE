@@ -273,7 +273,7 @@ function HomeScreen() {
   return (
     <SafeAreaView style={styles.rootScreen}>
       <ScrollView automaticallyAdjustContentInsets={false}>
-        <Home_WeekStrip onCalendarModalOpen={onCalendarModalOpen} />
+        {/* <Home_WeekStrip onCalendarModalOpen={onCalendarModalOpen} /> */}
         <ProcessBarWrapper>
           <StepContainer>
             <fonts.H2M style={{ color: colors.Grayscale_100 }}>

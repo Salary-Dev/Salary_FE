@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Pressable, Image } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createDrawerNavigator } from "@react-navigation/drawer";
 import { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -32,9 +33,14 @@ import MyPageSeedHistoryScreen from "./screens/MyPageSeedHistoryScreen";
 import MyPageNicknameChangeScreen from "./screens/MyPageNicknameChangeScreen";
 import HeaderLeftBtn from "./common/HeaderLftBtn";
 import { authToken } from "./Recoil/authToken";
+import NewsLetterMainScreen from "./screens/NewsLetterMainScreen";
+import NewsLetterArticleScreen from "./screens/NewsLetterArticleScreen";
+import CustomDrawer from "./components/NewsLetterMainScreen/CustomDrawer";
+import "./gesture-handler";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
+const Drawer = createDrawerNavigator();
 
 const tabScreensProps = [
   {
@@ -103,6 +109,34 @@ function BottomTabNavigator() {
   );
 }
 
+function DrawerNavigator({ route }) {
+  const editor = route.params.editor;
+  const articleList = route.params.articleList;
+  console.log("DrawerNavigator에서 params: ", route.params);
+
+  return (
+    <Drawer.Navigator
+      drawerContent={(props) => (
+        <CustomDrawer {...props} editor={editor} articleList={articleList} />
+      )}
+      defaultStatus="open"
+      screenOptions={{ drawerPosition: "right", drawerStyle: {width: 320}}}
+    >
+      {articleList.map((item, index) => (
+        <Drawer.Screen
+          key={index}
+          name={item}
+          component={NewsLetterArticleScreen}
+          initialParams={{
+            editor,
+            uploadDate: "Default Date",
+          }}
+        />
+      ))}
+    </Drawer.Navigator>
+  );
+}
+
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -128,7 +162,6 @@ export default function App() {
   function handleLogIn() {
     setIsLoggedIn(true);
     console.log("메인으로 갑니다");
-    console.log(authTok);
   }
 
   useEffect(() => {
@@ -151,7 +184,34 @@ export default function App() {
         >
           {!isLoggedIn ? (
             <>
-              <Stack.Screen name="SignIn" options={{ headerShown: false }}>
+              {/* 스타일링을 위한 임시 설정*/}
+              <Stack.Screen
+                name="NewsLetterMain"
+                component={NewsLetterMainScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="NewsLetterArticle"
+                component={NewsLetterArticleScreen}
+                options={{
+                  title: "경제레터",
+                  headerStyle: {
+                    backgroundColor: colors.bg,
+                  },
+                  headerTintColor: colors.Grayscale_100,
+                  headerTitleStyle: {
+                    fontFamily: "Pretendard-Medium",
+                  },
+                  headerShown: true,
+                  headerBackgroundColor: colors.bg,
+                  headerBackTitleVisible: false,
+                  headerLeft: () => <HeaderButton />,
+                }}
+              />
+              <Stack.Screen name="LetterDrawer" component={DrawerNavigator} options={{
+                  headerShown: false,
+                }} />
+              {/* <Stack.Screen name="SignIn" options={{ headerShown: false }}>
                 {({ navigation }) => (
                   <SignInScreen onEnter={handleLogIn} navigation={navigation} />
                 )}
@@ -160,7 +220,7 @@ export default function App() {
                 {({ navigation }) => (
                   <SignUpScreen onEnter={handleLogIn} navigation={navigation} />
                 )}
-              </Stack.Screen>
+              </Stack.Screen> */}
             </>
           ) : (
             <>

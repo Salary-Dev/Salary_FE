@@ -357,6 +357,7 @@ function TodaySalaryEduScreen({ route }) {
             parseStoryString(res.data.story3),
           ]);
           setBookMark(res.data.isSaved);
+          console.log(res.data);
           setLoading(false);
         }
       } catch (error) {

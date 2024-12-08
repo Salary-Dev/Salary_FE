@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Pressable, Image } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createDrawerNavigator } from "@react-navigation/drawer";
 import { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -32,9 +33,14 @@ import MyPageSeedHistoryScreen from "./screens/MyPageSeedHistoryScreen";
 import MyPageNicknameChangeScreen from "./screens/MyPageNicknameChangeScreen";
 import HeaderLeftBtn from "./common/HeaderLftBtn";
 import { authToken } from "./Recoil/authToken";
+import NewsLetterMainScreen from "./screens/NewsLetterMainScreen";
+import NewsLetterArticleScreen from "./screens/NewsLetterArticleScreen";
+import CustomDrawer from "./components/NewsLetterMainScreen/CustomDrawer";
+import "./gesture-handler";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
+const Drawer = createDrawerNavigator();
 
 const tabScreensProps = [
   {
@@ -171,7 +177,34 @@ export default function App() {
         >
           {!isLoggedIn ? (
             <>
-              <Stack.Screen name="SignIn" options={{ headerShown: false }}>
+              {/* 스타일링을 위한 임시 설정*/}
+              <Stack.Screen
+                name="NewsLetterMain"
+                component={NewsLetterMainScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="NewsLetterArticle"
+                component={NewsLetterArticleScreen}
+                options={{
+                  title: "경제레터",
+                  headerStyle: {
+                    backgroundColor: colors.bg,
+                  },
+                  headerTintColor: colors.Grayscale_100,
+                  headerTitleStyle: {
+                    fontFamily: "Pretendard-Medium",
+                  },
+                  headerShown: true,
+                  headerBackgroundColor: colors.bg,
+                  headerBackTitleVisible: false,
+                  headerLeft: () => <HeaderButton />,
+                }}
+              />
+              <Stack.Screen name="LetterDrawer" component={DrawerNavigator} options={{
+                  headerShown: false,
+                }} />
+              {/* <Stack.Screen name="SignIn" options={{ headerShown: false }}>
                 {({ navigation }) => (
                   <SignInScreen onEnter={handleLogIn} navigation={navigation} />
                 )}

@@ -209,7 +209,7 @@ export default function App() {
                   <SignInScreen onEnter={handleLogIn} navigation={navigation} />
                 )}
               </Stack.Screen>
-              <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }}/>
+              <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }}/>  */}
               
             </>
           ) : (

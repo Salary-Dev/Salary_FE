@@ -178,7 +178,6 @@ export default function App() {
           drawerStyle: { width: 320 },
           headerShown: false,
           drawerType: "front",
-          
         }}
       >
         {articleList.map((item, index) => (
@@ -230,43 +229,16 @@ export default function App() {
         >
           {!isLoggedIn ? (
             <>
-              {/* 스타일링을 위한 임시 설정*/}
-              <Stack.Screen
-                name="NewsLetterMain"
-                component={NewsLetterMainScreen}
-                options={{ headerShown: false }}
-              />
-              {/* <Stack.Screen
-                name="NewsLetterArticle"
-                component={NewsLetterArticleScreen}
-                options={{
-                  title: "경제레터",
-                  headerStyle: {
-                    backgroundColor: colors.bg,
-                  },
-                  headerTintColor: colors.Grayscale_100,
-                  headerTitleStyle: {
-                    fontFamily: "Pretendard-Medium",
-                  },
-                  headerShown: true,
-                  headerBackgroundColor: colors.bg,
-                  headerBackTitleVisible: false,
-                  headerLeft: () => <HeaderButton />,
-                }}
-              /> */}
-              <Stack.Screen
-                name="LetterDrawer"
-                component={DrawerNavigator}
-                options={{
-                  headerShown: false,
-                }}
-              />
-              {/* <Stack.Screen name="SignIn" options={{ headerShown: false }}>
+              <Stack.Screen name="SignIn" options={{ headerShown: false }}>
                 {({ navigation }) => (
                   <SignInScreen onEnter={handleLogIn} navigation={navigation} />
                 )}
               </Stack.Screen>
-              <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }}/>  */}
+              <Stack.Screen
+                name="SignUp"
+                component={SignUpScreen}
+                options={{ headerShown: false }}
+              />
             </>
           ) : (
             <>
@@ -388,6 +360,18 @@ export default function App() {
                   headerShown: true,
                   headerBackTitleVisible: false,
                   headerLeft: () => <HeaderLeftBtn theme="dark" />,
+                }}
+              />
+              <Stack.Screen
+                name="NewsLetterMain"
+                component={NewsLetterMainScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="LetterDrawer"
+                component={DrawerNavigator}
+                options={{
+                  headerShown: false,
                 }}
               />
             </>

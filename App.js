@@ -63,8 +63,6 @@ const tabScreensProps = [
   },
 ];
 
-
-
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -95,7 +93,7 @@ export default function App() {
 
   function handleLogOut() {
     setIsLoggedIn(false);
-    console.log("로그인창으로 돌아갑니다")
+    console.log("로그인창으로 돌아갑니다");
   }
 
   function BottomTabNavigator() {
@@ -134,26 +132,81 @@ export default function App() {
             }}
           />
         ))}
-        <BottomTab.Screen name="MyPage" options={{
-              title: "마이페이지",
-              headerShown: false,
-              tabBarLabelStyle: {
-                fontSize: 12,
-                fontWeight: "400",
-              },
-              tabBarIcon: ({ focused, color, size }) =>
-                focused ? (
-                  <Ionicons name={"person"} color={color} size={size} />
-                ) : (
-                  <Ionicons
-                    name={`${"person"}-outline`}
-                    color={color}
-                    size={size}
-                  ></Ionicons>
-                ),
-              tabBarActiveTintColor: "#313131",
-            }}>{({navigation}) => <MyPageScreen navigation={navigation} onLogOut={handleLogOut}/>}</BottomTab.Screen>
+        <BottomTab.Screen
+          name="MyPage"
+          options={{
+            title: "마이페이지",
+            headerShown: false,
+            tabBarLabelStyle: {
+              fontSize: 12,
+              fontWeight: "400",
+            },
+            tabBarIcon: ({ focused, color, size }) =>
+              focused ? (
+                <Ionicons name={"person"} color={color} size={size} />
+              ) : (
+                <Ionicons
+                  name={`${"person"}-outline`}
+                  color={color}
+                  size={size}
+                ></Ionicons>
+              ),
+            tabBarActiveTintColor: "#313131",
+          }}
+        >
+          {({ navigation }) => (
+            <MyPageScreen navigation={navigation} onLogOut={handleLogOut} />
+          )}
+        </BottomTab.Screen>
       </BottomTab.Navigator>
+    );
+  }
+
+  function DrawerNavigator({ route }) {
+    const editor = route.params.editor;
+    const articleList = route.params.articleList;
+    console.log("DrawerNavigator에서 params: ", route.params);
+
+    return (
+      <Drawer.Navigator
+        drawerContent={(props) => (
+          <CustomDrawer {...props} editor={editor} articleList={articleList} />
+        )}
+        defaultStatus="closed"
+        screenOptions={{
+          drawerPosition: "right",
+          drawerStyle: { width: 320 },
+          headerShown: false,
+          drawerType: "front",
+          
+        }}
+      >
+        {articleList.map((item, index) => (
+          <Drawer.Screen
+            key={index}
+            name={item}
+            component={NewsLetterArticleScreen}
+            initialParams={{
+              editor,
+              uploadDate: "Default Date",
+            }}
+            options={{
+              headerTitle: "경제레터",
+              headerStyle: {
+                backgroundColor: colors.bg,
+              },
+              headerTintColor: colors.Grayscale_100,
+              headerTitleStyle: {
+                fontFamily: "Pretendard-Medium",
+              },
+              headerShown: true,
+              headerBackgroundColor: colors.bg,
+              headerBackTitleVisible: false,
+              headerLeft: () => <HeaderButton />,
+            }}
+          />
+        ))}
+      </Drawer.Navigator>
     );
   }
 
@@ -183,7 +236,7 @@ export default function App() {
                 component={NewsLetterMainScreen}
                 options={{ headerShown: false }}
               />
-              <Stack.Screen
+              {/* <Stack.Screen
                 name="NewsLetterArticle"
                 component={NewsLetterArticleScreen}
                 options={{
@@ -200,17 +253,20 @@ export default function App() {
                   headerBackTitleVisible: false,
                   headerLeft: () => <HeaderButton />,
                 }}
-              />
-              <Stack.Screen name="LetterDrawer" component={DrawerNavigator} options={{
+              /> */}
+              <Stack.Screen
+                name="LetterDrawer"
+                component={DrawerNavigator}
+                options={{
                   headerShown: false,
-                }} />
+                }}
+              />
               {/* <Stack.Screen name="SignIn" options={{ headerShown: false }}>
                 {({ navigation }) => (
                   <SignInScreen onEnter={handleLogIn} navigation={navigation} />
                 )}
               </Stack.Screen>
               <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }}/>  */}
-              
             </>
           ) : (
             <>

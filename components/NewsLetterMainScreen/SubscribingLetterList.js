@@ -88,21 +88,32 @@ function SubscribingLetterList() {
       content: "중국 경제 둔화, 우리가 어떻게 대응해야 할까?",
       isNew: true,
       uploadDate: "2024.11.24",
+      articleList: ["망고망고 으라차차",
+  "까리까리 까리의의의",
+  "마르모라아 으으오실",
+  "다시 걸어갈 수 있도록",
+  "끼룩끼룩 독수리의 여행",]
     },
     {
       editor: "청경채",
       content: "오늘은 기술주 vs 가치주, 어느 쪽이 유망한지....",
       isNew: false,
       uploadDate: "2024.12.02",
+      articleList: ["망고망고 으라차차",
+        "까리까리 까리의의의",
+        "마르모라아 으으오실",
+        "다시 걸어갈 수 있도록",
+        "끼룩끼룩 독수리의 여행",]
     },
   ];
 
   const renderItem = ({ item }) => {
     return (
       <LetterBox
-        onPress={() => navigation.navigate("NewsLetterArticle", {
+        onPress={() => navigation.navigate("LetterDrawer", {
           editor: item.editor,
           uploadDate: item.uploadDate,
+          articleList: item.articleList
         })}
       >
         <LetterBoxInner>

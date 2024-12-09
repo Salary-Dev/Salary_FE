@@ -94,10 +94,7 @@ function NewsLetterArticleScreen({ navigation, route }) {
           <BlueCheckImg source={BlueCheck} />
         </EditorInfoContainer>
         <Pressable
-          onPress={() => navigation.navigate("LetterDrawer", {
-            editor: route.params.editor,
-            articleList: Data,
-          })}
+          onPress={() => navigation.openDrawer()}
         >
           <MoreLetterImg source={Hamburger} />
         </Pressable>

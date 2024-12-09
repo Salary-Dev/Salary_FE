@@ -7,9 +7,10 @@ import {
 } from "@react-navigation/drawer";
 import fonts from "../../styles/fonts";
 import colors from "../../styles/colors";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
+import ArrowBtn from "../../assets/img/signUpScreen/ArrowBtn.png";
 
 const EditorInfoContainer = styled.View`
   flex-direction: row;
@@ -41,13 +42,35 @@ const SubText = styled(fonts.Caption1)`
 
 const LastLetters = styled(fonts.Body1)`
   line-height: 20px;
+  margin: 40px 0px 25px 40px;
+`;
+
+const DrawerListItem = styled.View`
+  border-radius: 10px;
+  border: 1px solid ${colors.Grayscale_10};
+  background-color: ${colors.Grayscale_white};
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0px 10px;
+  padding: 6px 12px;
+`;
+
+const DrawerListItemText = styled(fonts.Body2M)``;
+const ArrowBtnImg = styled.Image`
+  width: 6px;
+  height: 12px;
 `;
 
 function CustomDrawer({ editor, articleList, ...props }) {
+  console.log("CustomDrawer에서 artileList의 값", articleList);
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar style="dark" />
-      <DrawerContentScrollView {...props} contentContainerStyle={{paddingLeft: 0}} style={styles.ContentView}>
+      <DrawerContentScrollView
+        {...props}
+        contentContainerStyle={{}}
+      >
         <LinearGradient
           style={styles.LinearGradient}
           start={{ x: 0.0, y: 0.0 }}
@@ -63,11 +86,18 @@ function CustomDrawer({ editor, articleList, ...props }) {
           </EditorInfoContainer>
         </LinearGradient>
         <LastLetters>지난 글</LastLetters>
-        <DrawerItemList {...props}>
-          {articleList.map((item, index) => (
-            <DrawerItem key={index}>{item}</DrawerItem>
-          ))}
-        </DrawerItemList>
+
+        {articleList.map((item, index) => (
+          <DrawerItem
+            key={index}
+            label={({ focused, color }) => (
+              <DrawerListItem>
+                <DrawerListItemText>{item}</DrawerListItemText>
+                <ArrowBtnImg source={ArrowBtn}/>
+              </DrawerListItem>
+            )}
+          />
+        ))}
       </DrawerContentScrollView>
     </SafeAreaView>
   );
@@ -80,9 +110,5 @@ const styles = StyleSheet.create({
     height: 134,
     width: "100%",
     paddingVertical: 46,
-    
-  },
-  ContentView: {
-    paddingHorizontal: 0,
   },
 });

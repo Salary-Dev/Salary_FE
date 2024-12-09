@@ -3,9 +3,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import getKoreaFormattedDate from "../functions/getKoreaForamttedDate";
 import { BASE_URL } from "@env";
 
-export async function fetchTodayWordData({ word_id }) {
+export async function fetchTodayWordData({ word_id, token }) {
   try {
-    const res = await axios.get(`${BASE_URL}/words?word_id=${word_id}`);
+    const res = await axios.get(`${BASE_URL}/words?word_id=${word_id}`, {
+      headers: {
+        Authorization: token,
+      },
+    });
     if (res.status === 200) {
       await AsyncStorage.setItem(
         "todaySalaryData",

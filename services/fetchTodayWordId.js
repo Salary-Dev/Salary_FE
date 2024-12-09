@@ -1,6 +1,5 @@
 import axios from "axios";
 import { BASE_URL } from "@env";
-import { fetchTodayWordData } from "./fetchTodayWordData";
 
 export async function fetchTodayWordId(token) {
   try {

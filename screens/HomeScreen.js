@@ -177,9 +177,11 @@ function HomeScreen() {
             "이전에 패치된 데이터가 없거나 지난 날짜라서 새로 단어 id를 받아옴"
           );
           fetchTodayWordId(token).then((fetchedData) => {
-            fetchTodayWordData(fetchedData).then((fetchedWordData) => {
-              setTodaySalary(fetchedWordData);
-            });
+            fetchTodayWordData({ ...fetchedData, token: token }).then(
+              (fetchedWordData) => {
+                setTodaySalary(fetchedWordData);
+              }
+            );
           });
         } else {
           // 이미 데이터가 asyncStorage에 저장된 상태이므로 전역 상태값의 초기값으로 지정해줌

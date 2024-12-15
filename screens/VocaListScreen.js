@@ -25,6 +25,7 @@ import VocaReminder_Button from "../components/vocaListScreen/VocaReminder_Butto
 import Info from "../assets/img/vocaListScreen/info.png";
 import { authToken } from "../Recoil/authToken";
 import { nicknameState } from "../Recoil/nicknameState";
+import emptyBox from "../assets/img/vocaListScreen/emptyBox.png";
 
 const TitleContainer = styled.View`
   width: 100%;
@@ -69,6 +70,7 @@ function VocaListScreen() {
           Authorization: token,
         },
       });
+      console.log(res.data);
       if (res.status === 200) {
         const orderedDate = res.data.sort(
           (a, b) => new Date(b.like_date) - new Date(a.like_date)
@@ -139,9 +141,24 @@ function VocaListScreen() {
             renderItem={({ item }) => <VocaList_FlatListItem {...item} />}
             keyExtractor={(item) => item.word_id}
             ListEmptyComponent={
-              <fonts.H2B style={{ textAlign: "center" }}>
-                단어장에 단어를 추가해보세요!
-              </fonts.H2B>
+              <View
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  minHeight: "100%", // 여백 높이를 전부 차지
+                  gap: 10,
+                }}
+              >
+                <Image
+                  style={{ width: 44, height: 44 }}
+                  source={emptyBox}
+                ></Image>
+                <fonts.Caption2 style={{ color: colors.Grayscale_40 }}>
+                  아직 저장된 단어가 없어요.
+                </fonts.Caption2>
+              </View>
             }
           />
         </FlatListContainer>

@@ -93,7 +93,7 @@ function MyPageNicknameChangeScreen() {
         {},
         { headers: { Authorization: token } }
       );
-      console.log("닉네임 수정 api 작동했는가: ", res);
+      console.log("닉네임 수정 api 작동했는가: ", res.data);
 
       setNickname(text);
       openModal();

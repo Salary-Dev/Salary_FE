@@ -346,7 +346,12 @@ function TodaySalaryEduScreen({ route }) {
     async function fetchWordData() {
       try {
         const res = await axios.get(
-          `${BASE_URL}/words?word_id=${route.params.word_id}`
+          `${BASE_URL}/words?word_id=${route.params.word_id}`,
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
         );
         if (res.status === 200) {
           console.log(res.data.example);
@@ -357,6 +362,7 @@ function TodaySalaryEduScreen({ route }) {
             parseStoryString(res.data.story3),
           ]);
           setBookMark(res.data.isSaved);
+          console.log(res.data);
           setLoading(false);
         }
       } catch (error) {

@@ -1,5 +1,12 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Pressable, Image } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Pressable,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -37,31 +44,12 @@ import NewsLetterMainScreen from "./screens/NewsLetterMainScreen";
 import NewsLetterArticleScreen from "./screens/NewsLetterArticleScreen";
 import CustomDrawer from "./components/NewsLetterMainScreen/CustomDrawer";
 import "./gesture-handler";
+import NavLetterActiveIcn from "./assets/img/nav/Nav_LetterActive.png";
+import NavLetterIcn from "./assets/img/nav/Nav_Letter.png";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
-
-const tabScreensProps = [
-  {
-    screenName: "Home",
-    title: "홈",
-    iconTitle: "home",
-    screen: HomeScreen,
-  },
-  {
-    screenName: "VocabularySearch",
-    title: "단어 검색",
-    iconTitle: "search",
-    screen: VocaSearchScreen,
-  },
-  {
-    screenName: "VocabularyList",
-    title: "단어장",
-    iconTitle: "bookmark",
-    screen: VocaListScreen,
-  },
-];
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -97,41 +85,128 @@ export default function App() {
   }
 
   function BottomTabNavigator() {
+    const navigation = useNavigation(); // 컴포넌트 내부에서 호출
+    const [isCenterButtonActive, setIsCenterButtonActive] = useState(false);
+
+    const handleCenterButtonPress = () => {
+      // 중앙 버튼 활성화
+      setIsCenterButtonActive(true);
+      navigation.navigate("NewsLetterMain"); // 중앙 버튼 화면으로 이동
+    };
+
     return (
       <BottomTab.Navigator
-        screenOptions={({ route }) => ({
+        screenOptions={{
           tabBarStyle: {
             backgroundColor: "#f3f4f6",
             paddingTop: 5,
           },
-        })}
+        }}
       >
-        {tabScreensProps.map((item) => (
-          <BottomTab.Screen
-            key={item.screenName}
-            name={item.screenName}
-            component={item.screen}
-            options={{
-              title: item.title,
-              headerShown: false,
-              tabBarLabelStyle: {
-                fontSize: 12,
-                fontWeight: "400",
-              },
-              tabBarIcon: ({ focused, color, size }) =>
-                focused ? (
-                  <Ionicons name={item.iconTitle} color={color} size={size} />
-                ) : (
-                  <Ionicons
-                    name={`${item.iconTitle}-outline`}
-                    color={color}
-                    size={size}
-                  ></Ionicons>
-                ),
-              tabBarActiveTintColor: "#313131",
-            }}
-          />
-        ))}
+        {/* 1. 홈 */}
+        <BottomTab.Screen
+          name="Home"
+          options={{
+            title: "홈",
+            headerShown: false,
+            tabBarLabelStyle: {
+              fontSize: 12,
+              fontWeight: "400",
+            },
+            tabBarIcon: ({ focused, color, size }) =>
+              focused ? (
+                <Ionicons name={"home"} color={color} size={size} />
+              ) : (
+                <Ionicons
+                  name={`${"home"}-outline`}
+                  color={color}
+                  size={size}
+                />
+              ),
+            tabBarActiveTintColor: "#313131",
+          }}
+        >
+          {({ navigation }) => <HomeScreen />}
+        </BottomTab.Screen>
+        {/* 2. 단어 검색 */}
+        <BottomTab.Screen
+          name="VocabularySearch"
+          options={{
+            title: "단어 검색",
+            headerShown: false,
+            tabBarLabelStyle: {
+              fontSize: 12,
+              fontWeight: "400",
+            },
+            tabBarIcon: ({ focused, color, size }) =>
+              focused ? (
+                <Ionicons name={"search"} color={color} size={size} />
+              ) : (
+                <Ionicons
+                  name={`${"search"}-outline`}
+                  color={color}
+                  size={size}
+                />
+              ),
+            tabBarActiveTintColor: "#313131",
+          }}
+        >
+          {({ navigation }) => <VocaSearchScreen />}
+        </BottomTab.Screen>
+        {/* 3.뉴스 레터 */}
+        <BottomTab.Screen
+          name="NewsLetter"
+          component={NewsLetterMainScreen}
+          options={{
+            title: "뉴스 레터",
+            headerShown: false,
+            tabBarLabelStyle: {
+              fontSize: 12,
+              fontWeight: "400",
+            },
+            tabBarIcon: ({ focused }) => (
+              <View style={styles.centerButtonContainer}>
+                <Image
+                  source={focused ? NavLetterActiveIcn : NavLetterIcn}
+                  style={styles.centerButtonIcon}
+                />
+              </View>
+            ),
+            tabBarActiveTintColor: "#313131",
+          }}
+          listeners={({ navigation }) => ({
+            tabPress: (e) => {
+              e.preventDefault(); // 기본 탭 동작 차단
+              navigation.navigate("NewsLetter"); // 커스텀 네비게이션 실행
+            },
+          })}
+        />
+        {/* 4. 단어장 */}
+        <BottomTab.Screen
+          name="VocabularyList"
+          options={{
+            title: "단어장",
+            headerShown: false,
+            tabBarLabelStyle: {
+              fontSize: 12,
+              fontWeight: "400",
+            },
+            tabBarIcon: ({ focused, color, size }) =>
+              focused ? (
+                <Ionicons name={"bookmark"} color={color} size={size} />
+              ) : (
+                <Ionicons
+                  name={`${"bookmark"}-outline`}
+                  color={color}
+                  size={size}
+                />
+              ),
+            tabBarActiveTintColor: "#313131",
+          }}
+        >
+          {({ navigation }) => <VocaListScreen />}
+        </BottomTab.Screen>
+        {/* 5. 마이페이지 */}
         <BottomTab.Screen
           name="MyPage"
           options={{
@@ -149,7 +224,7 @@ export default function App() {
                   name={`${"person"}-outline`}
                   color={color}
                   size={size}
-                ></Ionicons>
+                />
               ),
             tabBarActiveTintColor: "#313131",
           }}
@@ -394,5 +469,26 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     transform: [{ scaleX: -1 }],
+  },
+  screen: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
+  centerButtonContainer: {
+    width: 70,
+    height: 70,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 38, // 탭바 높이 조정
+    elevation: 5, // 그림자 효과 (Android)
+    shadowColor: "#000", // 그림자 효과 (iOS)
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+  },
+  centerButtonIcon: {
+    width: 70,
+    height: 70,
   },
 });

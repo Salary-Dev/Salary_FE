@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Pressable, Image } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createDrawerNavigator } from "@react-navigation/drawer";
 import { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -32,9 +33,14 @@ import MyPageSeedHistoryScreen from "./screens/MyPageSeedHistoryScreen";
 import MyPageNicknameChangeScreen from "./screens/MyPageNicknameChangeScreen";
 import HeaderLeftBtn from "./common/HeaderLftBtn";
 import { authToken } from "./Recoil/authToken";
+import NewsLetterMainScreen from "./screens/NewsLetterMainScreen";
+import NewsLetterArticleScreen from "./screens/NewsLetterArticleScreen";
+import CustomDrawer from "./components/NewsLetterMainScreen/CustomDrawer";
+import "./gesture-handler";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
+const Drawer = createDrawerNavigator();
 
 const tabScreensProps = [
   {
@@ -56,8 +62,6 @@ const tabScreensProps = [
     screen: VocaListScreen,
   },
 ];
-
-
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -89,7 +93,7 @@ export default function App() {
 
   function handleLogOut() {
     setIsLoggedIn(false);
-    console.log("로그인창으로 돌아갑니다")
+    console.log("로그인창으로 돌아갑니다");
   }
 
   function BottomTabNavigator() {
@@ -128,26 +132,80 @@ export default function App() {
             }}
           />
         ))}
-        <BottomTab.Screen name="MyPage" options={{
-              title: "마이페이지",
-              headerShown: false,
-              tabBarLabelStyle: {
-                fontSize: 12,
-                fontWeight: "400",
-              },
-              tabBarIcon: ({ focused, color, size }) =>
-                focused ? (
-                  <Ionicons name={"person"} color={color} size={size} />
-                ) : (
-                  <Ionicons
-                    name={`${"person"}-outline`}
-                    color={color}
-                    size={size}
-                  ></Ionicons>
-                ),
-              tabBarActiveTintColor: "#313131",
-            }}>{({navigation}) => <MyPageScreen navigation={navigation} onLogOut={handleLogOut}/>}</BottomTab.Screen>
+        <BottomTab.Screen
+          name="MyPage"
+          options={{
+            title: "마이페이지",
+            headerShown: false,
+            tabBarLabelStyle: {
+              fontSize: 12,
+              fontWeight: "400",
+            },
+            tabBarIcon: ({ focused, color, size }) =>
+              focused ? (
+                <Ionicons name={"person"} color={color} size={size} />
+              ) : (
+                <Ionicons
+                  name={`${"person"}-outline`}
+                  color={color}
+                  size={size}
+                ></Ionicons>
+              ),
+            tabBarActiveTintColor: "#313131",
+          }}
+        >
+          {({ navigation }) => (
+            <MyPageScreen navigation={navigation} onLogOut={handleLogOut} />
+          )}
+        </BottomTab.Screen>
       </BottomTab.Navigator>
+    );
+  }
+
+  function DrawerNavigator({ route }) {
+    const editor = route.params.editor;
+    const articleList = route.params.articleList;
+    console.log("DrawerNavigator에서 params: ", route.params);
+
+    return (
+      <Drawer.Navigator
+        drawerContent={(props) => (
+          <CustomDrawer {...props} editor={editor} articleList={articleList} />
+        )}
+        defaultStatus="closed"
+        screenOptions={{
+          drawerPosition: "right",
+          drawerStyle: { width: 320 },
+          headerShown: false,
+          drawerType: "front",
+        }}
+      >
+        {articleList.map((item, index) => (
+          <Drawer.Screen
+            key={index}
+            name={item}
+            component={NewsLetterArticleScreen}
+            initialParams={{
+              editor,
+              uploadDate: "Default Date",
+            }}
+            options={{
+              headerTitle: "경제레터",
+              headerStyle: {
+                backgroundColor: colors.bg,
+              },
+              headerTintColor: colors.Grayscale_100,
+              headerTitleStyle: {
+                fontFamily: "Pretendard-Medium",
+              },
+              headerShown: true,
+              headerBackgroundColor: colors.bg,
+              headerBackTitleVisible: false,
+              headerLeft: () => <HeaderButton />,
+            }}
+          />
+        ))}
+      </Drawer.Navigator>
     );
   }
 
@@ -176,8 +234,11 @@ export default function App() {
                   <SignInScreen onEnter={handleLogIn} navigation={navigation} />
                 )}
               </Stack.Screen>
-              <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }}/>
-              
+              <Stack.Screen
+                name="SignUp"
+                component={SignUpScreen}
+                options={{ headerShown: false }}
+              />
             </>
           ) : (
             <>
@@ -299,6 +360,18 @@ export default function App() {
                   headerShown: true,
                   headerBackTitleVisible: false,
                   headerLeft: () => <HeaderLeftBtn theme="dark" />,
+                }}
+              />
+              <Stack.Screen
+                name="NewsLetterMain"
+                component={NewsLetterMainScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="LetterDrawer"
+                component={DrawerNavigator}
+                options={{
+                  headerShown: false,
                 }}
               />
             </>

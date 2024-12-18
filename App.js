@@ -246,7 +246,7 @@ export default function App() {
       "투자 시작은 언제가 좋을 까? (2)",
       "내일의 경제를 읽는 법",
     ];
-    
+
     console.log("DrawerNavigator에서 params: ", route.params);
 
     return (

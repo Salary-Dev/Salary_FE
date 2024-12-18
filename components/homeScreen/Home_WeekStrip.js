@@ -15,7 +15,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const Container = styled.View`
   flex: 1;
 `;
-const HeaderContainer = styled.View`
+const HeaderContainer = styled.TouchableOpacity`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -108,9 +108,9 @@ const Home_WeekStrip = ({ onCalendarModalOpen }) => {
 
   return (
     <Container>
-      <HeaderContainer>
+      <HeaderContainer onPress={onCalendarModalOpen}>
         <HeaderText>{headerText}</HeaderText>
-        <HeaderCalendarBtn onPress={onCalendarModalOpen}>
+        <HeaderCalendarBtn>
           <Ionicons name="calendar-clear-outline" size={20}></Ionicons>
         </HeaderCalendarBtn>
       </HeaderContainer>

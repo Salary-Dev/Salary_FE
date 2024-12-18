@@ -491,6 +491,8 @@ function HomeScreen() {
   const triggerAnimation = () => {
     console.log("triggerAnimation called");
 
+    setAnimationVisible(true);
+
     if (isAnimationVisible) return;
     // ScrollView가 렌더링될 때까지 강제로 대기 후 스크롤
     if (scrollViewRef.current) {
@@ -498,7 +500,6 @@ function HomeScreen() {
       console.log("Scrolled to top");
     }
 
-    setAnimationVisible(true);
     animationRef.current?.play(); // 수동 재생 추가
   };
 
@@ -532,7 +533,7 @@ function HomeScreen() {
           ref={scrollViewRef}
           automaticallyAdjustContentInsets={false}
         >
-          <Home_WeekStrip onCalendarModalOpen={onCalendarModalOpen} />
+          {/* <Home_WeekStrip onCalendarModalOpen={onCalendarModalOpen} /> */}
           {/* 상단 프로세스 바 */}
           <ProcessBarWrapper>
             <StepContainer>

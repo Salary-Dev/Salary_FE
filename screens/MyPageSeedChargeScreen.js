@@ -128,14 +128,14 @@ const ModalText = styled(fonts.Body2R)`
   color: black;
 `;
 
-function ChargeItem({ amount, price, totalSeed }) {
+function ChargeItem({ amount, price, totalSeed, onClick }) {
   var width;
   if (price === "2,500원") width = "40%";
   else if (price === "5,600원") width = "80%";
   else width = "100%";
 
   return (
-    <ItemContainer>
+    <ItemContainer onPress={onClick}>
       <View
         style={{
           flexDirection: "row",
@@ -209,9 +209,9 @@ function MyPageSeedChargeScreen({ route }) {
           </fonts.H2M>
         </View>
         <ItemsContainer>
-          <ChargeItem amount={"50 개"} price={"2,500원"} />
-          <ChargeItem amount={"100 개"} price={"5,600원"} />
-          <ChargeItem amount={"200 개"} price={"9,900원"} />
+          <ChargeItem amount={"50 개"} price={"2,500원"} onClick={openModal} />
+          <ChargeItem amount={"100 개"} price={"5,600원"} onClick={openModal} />
+          <ChargeItem amount={"200 개"} price={"9,900원"} onClick={openModal} />
         </ItemsContainer>
       </BlackContainer>
       {/* 두 컨테이너 사이에 겹치는 시드 아이템 컨테이너 */}
@@ -232,7 +232,13 @@ function MyPageSeedChargeScreen({ route }) {
           </fonts.Caption2>
           <Image source={NavigateBtn} style={{ width: 26, height: 26 }} />
         </GrayItemContainer>
-        <GrayItemContainer onPress={() => openModal()}>
+        <GrayItemContainer
+          onPress={() =>
+            navigation.navigate("BottomTab", {
+              screen: "Home",
+            })
+          }
+        >
           <fonts.Caption2 style={{ color: colors.Grayscale_white }}>
             <Text style={{ color: colors.text_green }}>트렌드 퀴즈</Text> 풀고{" "}
             <Text style={{ color: colors.text_green }}>무료</Text>로 시드 5개

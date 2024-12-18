@@ -76,25 +76,25 @@ const DATA = [
     title: "중국 경제 둔화, 우리가 어떻게 대응해야 할까?",
     editor: "청경채",
     elapsedTime: "3분 전",
-    uploadDate: "2024-11-24"
+    uploadDate: "2024-11-24",
   },
   {
     title: "AI 열풍 속 관심 가질만 한 주식을 모아봤어요.",
     editor: "농부사자",
     elapsedTime: "1시간 전",
-    uploadDate: "2024-11-24"
+    uploadDate: "2024-11-24",
   },
   {
     title: "2025년, 내 돈 어떻게 굴릴까?",
     editor: "부자사자",
     elapsedTime: "1시간 전",
-    uploadDate: "2024-11-24"
+    uploadDate: "2024-11-24",
   },
   {
     title: "테스트에욥. 나는 낭만 고양이 생선을 좋아하죠",
     editor: "낭만고양이",
     elapsedTime: "5시간 전",
-    uploadDate: "2024-11-24"
+    uploadDate: "2024-11-24",
   },
 ];
 
@@ -105,13 +105,13 @@ function ArrivedLetterList() {
 
   const getArrivedList = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/economy-letter/normal`)
+      const res = await axios.get(`${BASE_URL}/economy-letter/normal`);
       console.log(res.data);
       setFetchedData(res.data);
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
     getArrivedList();
@@ -121,10 +121,10 @@ function ArrivedLetterList() {
     return (
       <LetterBoxContainer
         onPress={() =>
-          navigation.navigate("NewsLetterArticle", {
+          navigation.navigate("LetterDrawer", {
             editor: item.editor,
             uploadDate: item.uploadDate,
-            title: item.title
+            title: item.title,
           })
         }
       >

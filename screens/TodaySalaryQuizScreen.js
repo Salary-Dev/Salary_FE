@@ -211,18 +211,29 @@ function TodaySalaryScreen() {
   //// 모달 관리
   const [isModalVisible, setIsModalVisible] = useState(false);
 
+  // 소리 추가 
+  const [sound, setSound] = useState();
+
+  async function playSound(type) {
+    const { sound } = await Audio.Sound.createAsync(
+      type // 로컬 사운드 파일
+    );
+    setSound(sound);
+    await sound.playAsync();
+  }
+
+  useEffect(() => {
+    return sound ? () => { sound.unloadAsync() } : undefined;
+  }, [sound])
+
   async function openModal() {
     setIsModalVisible(true);
-//     await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
-
-// const { sound: playbackObject } = await Audio.Sound.createAsync(
-//   { uri: SuccessSound },
-//   { shouldPlay: true }
-// );
     if (checkIfAnswer()) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      playSound(SuccessSound);
     } else {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+      playSound(ErrorSound);
     }
   }
 

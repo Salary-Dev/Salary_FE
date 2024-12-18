@@ -107,7 +107,7 @@ function TodaySalaryEdu_Modal({ closeModal, fetchBookMarkState }) {
   const navigation = useNavigation();
 
   return (
-    <TouchableWithoutFeedback onPress={closeModal}>
+    <TouchableWithoutFeedback>
       <ModalOverlay>
         <TouchableWithoutFeedback>
           <ModalContent>

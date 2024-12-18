@@ -9,12 +9,13 @@ import axios from "axios";
 import { BASE_URL } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import getKoreaFormattedDate from "../functions/getKoreaForamttedDate";
-import LottieView from 'lottie-react-native';
-import fonts from '../styles/fonts';
+import LottieView from "lottie-react-native";
+import fonts from "../styles/fonts";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { authToken } from "../Recoil/authToken";
 import { todayTrendSelector } from "../Recoil/todayAttendanceDetail";
 import { todayAttendanceState } from "../Recoil/todayAttendanceState";
+import DoneEventEmitter from "../events/DoneEventEmitter";
 
 const ViewContainer = styled.SafeAreaView`
   background-color: white;
@@ -76,7 +77,7 @@ const AnswerBox = styled.Pressable`
   width: 100%;
   min-height: 60px;
   border-radius: 6px;
-  background-color: ${(props) => (!props.isSelected ? '#ffffff' : '#313131')};
+  background-color: ${(props) => (!props.isSelected ? "#ffffff" : "#313131")};
   padding: 8px 12px;
   margin-bottom: 14px;
 `;
@@ -224,15 +225,14 @@ function TodayTrendQuizScreen() {
         {
           isCorrect: false,
           isSelected: false,
-          content:
-            `${trendQuizData.incorrect[2]}`,
+          content: `${trendQuizData.incorrect[2]}`,
         },
       ];
       setAnswersState(shuffle(InitialAnswers));
     }
   }, [trendQuizData]);
 
-  console.log("answerState: ",answersState)
+  console.log("answerState: ", answersState);
 
   const handleSelectAnswer = (targetedIndex) => {
     let updatedAnswersState;
@@ -281,43 +281,18 @@ function TodayTrendQuizScreen() {
     setIsModalVisible(false); // 상태 초기화
   }, []);
 
-  const handleFinishStudy = async () => {
-    try {
-      const res = await axios.post(
-        `${BASE_URL}/trend-quiz/update-status?trend=${true}`,
-        {},
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
-      const resSeed = await axios.patch(
-        `${BASE_URL}/seed/update`,
-        {
-          seed_earned: 5,
-          seed_used: 0,
-        },
-        { headers: { Authorization: token } }
-      );
-      console.log("시드 patch", resSeed.data.status);
-      if (!trendState) {
-        setTrendState(true);
-        setAttendanceState((prev) => prev + 1); // attendance state에 1을 더해주어 알맞게 상태 관리
-        // 중복 처리되어서는 안됨!!
-      }
-      console.log(res.data);
-      navigation.navigate("BottomTab");
-    } catch (error) {
-      console.log(error);
-    }
+  const handleFinishStudy = () => {
+    // navigation.navigate("BottomTab"); 이거 필요한가?
+    DoneEventEmitter.emit("trendDone");
+    console.log("이벤트 emit");
   };
 
   useEffect(() => {
     if (isModalVisible) {
       handleFinishStudy();
+      // 이벤트를 발행함.
     }
-  }, [isModalVisible])
+  }, [isModalVisible]);
 
   return (
     <ViewContainer>
@@ -400,8 +375,15 @@ function TodayTrendQuizScreen() {
         </QuizViewContainer>
       ) : (
         <LoadingIndicator>
-        <LottieView style={{width: 300, height: 300}} source={require('../assets/animations/Loading.json')} autoPlay loop={true}/><LoadingText>트렌드 퀴즈{'\n'}불러오는 중..</LoadingText>
-      </LoadingIndicator>)}
+          <LottieView
+            style={{ width: 300, height: 300 }}
+            source={require("../assets/animations/Loading.json")}
+            autoPlay
+            loop={true}
+          />
+          <LoadingText>트렌드 퀴즈{"\n"}불러오는 중..</LoadingText>
+        </LoadingIndicator>
+      )}
     </ViewContainer>
   );
 }

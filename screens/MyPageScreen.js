@@ -332,7 +332,7 @@ function MyPageScreen({ navigation, onLogOut }) {
                 size={20}
                 color={"#a0a0a0"}
               ></Ionicons>
-              <fonts.Body2M>닉네임 수정</fonts.Body2M>
+              <fonts.Body2M>개인정보 수정</fonts.Body2M>
             </ListTextContainer>
             <Ionicons
               name="chevron-forward-outline"
@@ -340,7 +340,7 @@ function MyPageScreen({ navigation, onLogOut }) {
               color={"#a0a0a0"}
             ></Ionicons>
           </ListItem>
-          <ListItem onPress={() => openModal()}>
+          {/* <ListItem onPress={() => openModal()}>
             <ListTextContainer>
               <Ionicons
                 name="help-circle-outline"
@@ -354,7 +354,7 @@ function MyPageScreen({ navigation, onLogOut }) {
               size={16}
               color={"#a0a0a0"}
             ></Ionicons>
-          </ListItem>
+          </ListItem> */}
           <ListItem onPress={() => openModal()}>
             <ListTextContainer>
               <Ionicons

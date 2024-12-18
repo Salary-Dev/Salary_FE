@@ -47,10 +47,10 @@ const Title = styled(fonts.H3)`
 
 const Input = styled.TextInput`
   width: 100%;
-  height: 50px;
-  padding: 11px 22px;
+  height: 40px;
+  padding: 0px 22px;
   justify-content: center;
-  align-items: center;
+  
   vertical-align: middle;
   line-height: 14px;
 
@@ -59,7 +59,7 @@ const Input = styled.TextInput`
 
   font-family: "Pretendard-Regular";
   font-size: 14px;
-  line-height: 22px;
+  line-height: 18px;
 
   color: #121212;
   ${(props) =>

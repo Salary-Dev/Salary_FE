@@ -222,6 +222,7 @@ function VocaSearchScreen({ navigation }) {
         const response = await axios.get(`${BASE_URL}/words/recommand`, {
           headers: { Authorization: token },
         });
+        console.log("단어 검색 추천 api:", response.data);
         setRecommendedList(response.data);
         setIsRecommendationDone(false);
       } catch (error) {

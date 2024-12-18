@@ -6,16 +6,19 @@
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "splash": {
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "salary"
     },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.patrickgong.Salary_FE"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -25,7 +28,17 @@
       {
         "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone."
       }
-    ]],
-    "newArchEnabled": true
+    ], [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps._some_id_here_"
+        }
+      ]],
+    "newArchEnabled": true,
+        "extra": {
+      "eas": {
+        "projectId": "b661da17-a575-4171-b801-9970b00c7d44"
+      }
+    }
   }
 }

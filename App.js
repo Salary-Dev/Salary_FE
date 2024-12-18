@@ -59,7 +59,7 @@ export default function App() {
     const navigation = useNavigation();
 
     return (
-      <Pressable onPress={() => navigation.goBack(-1)}>
+      <Pressable onPress={() => navigation.goBack(-1)} style={styles.ArrowBtnImgWrapper}>
         <Image source={arrowImg} style={styles.ArrowBtnImg} />
       </Pressable>
     );
@@ -269,7 +269,9 @@ export default function App() {
             component={NewsLetterArticleScreen}
             initialParams={{
               editor,
-              uploadDate: "Default Date",
+              uploadDate: route.params.uploadDate.slice(0,10),
+              title: route.params.title,
+              body: route.params.body
             }}
             options={{
               headerTitle: "경제레터",
@@ -476,6 +478,10 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     transform: [{ scaleX: -1 }],
+  },
+  ArrowBtnImgWrapper: {
+    
+    padding: 10
   },
   screen: {
     flex: 1,

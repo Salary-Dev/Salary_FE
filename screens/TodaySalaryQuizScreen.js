@@ -21,6 +21,7 @@ import { useNavigation } from "@react-navigation/native";
 import PrimaryModal from "../common/PrimaryModal";
 import { useRecoilValue } from "recoil";
 import { todaySalaryContent } from "../Recoil/todaySalaryContent";
+import * as Haptics from "expo-haptics";
 
 const Container = styled.View`
   align-items: center;
@@ -208,6 +209,11 @@ function TodaySalaryScreen() {
 
   function openModal() {
     setIsModalVisible(true);
+    if (checkIfAnswer()) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    } else {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+    }
   }
 
   function closeModal() {

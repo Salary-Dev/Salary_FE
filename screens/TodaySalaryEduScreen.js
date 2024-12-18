@@ -39,6 +39,7 @@ import parseStoryString from "../functions/parseStoryString";
 import LottieView from "lottie-react-native";
 import { authToken } from "../Recoil/authToken";
 import { nicknameState } from "../Recoil/nicknameState";
+import * as Haptics from "expo-haptics";
 
 const RootContainer = styled.View`
   flex: 1;
@@ -261,6 +262,7 @@ function TodaySalaryEduScreen({ route }) {
   function onBookmarkToggle() {
     console.log("토글 전 북마크 상태", bookMark);
     fetchBookMarkState(!bookMark);
+    Haptics.selectionAsync()
   }
 
   async function fetchBookMarkState(tmpState) {

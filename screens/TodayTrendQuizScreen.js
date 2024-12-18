@@ -9,12 +9,13 @@ import axios from "axios";
 import { BASE_URL } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import getKoreaFormattedDate from "../functions/getKoreaForamttedDate";
-import LottieView from 'lottie-react-native';
-import fonts from '../styles/fonts';
+import LottieView from "lottie-react-native";
+import fonts from "../styles/fonts";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { authToken } from "../Recoil/authToken";
 import { todayTrendSelector } from "../Recoil/todayAttendanceDetail";
 import { todayAttendanceState } from "../Recoil/todayAttendanceState";
+import * as Haptics from "expo-haptics";
 
 const ViewContainer = styled.SafeAreaView`
   background-color: white;
@@ -76,7 +77,7 @@ const AnswerBox = styled.Pressable`
   width: 100%;
   min-height: 60px;
   border-radius: 6px;
-  background-color: ${(props) => (!props.isSelected ? '#ffffff' : '#313131')};
+  background-color: ${(props) => (!props.isSelected ? "#ffffff" : "#313131")};
   padding: 8px 12px;
   margin-bottom: 14px;
 `;
@@ -224,15 +225,14 @@ function TodayTrendQuizScreen() {
         {
           isCorrect: false,
           isSelected: false,
-          content:
-            `${trendQuizData.incorrect[2]}`,
+          content: `${trendQuizData.incorrect[2]}`,
         },
       ];
       setAnswersState(shuffle(InitialAnswers));
     }
   }, [trendQuizData]);
 
-  console.log("answerState: ",answersState)
+  console.log("answerState: ", answersState);
 
   const handleSelectAnswer = (targetedIndex) => {
     let updatedAnswersState;
@@ -258,6 +258,14 @@ function TodayTrendQuizScreen() {
     // 무언가 데이터를 처리해서...
     // 모달 띄우기
     openModal();
+    const isSucceeded = answersState.find(
+      (item) => item.isSelected && item.isCorrect
+    );
+    if (isSucceeded) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    } else {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+    }
   };
 
   // 모달 관리
@@ -317,7 +325,7 @@ function TodayTrendQuizScreen() {
     if (isModalVisible) {
       handleFinishStudy();
     }
-  }, [isModalVisible])
+  }, [isModalVisible]);
 
   return (
     <ViewContainer>
@@ -400,8 +408,15 @@ function TodayTrendQuizScreen() {
         </QuizViewContainer>
       ) : (
         <LoadingIndicator>
-        <LottieView style={{width: 300, height: 300}} source={require('../assets/animations/Loading.json')} autoPlay loop={true}/><LoadingText>트렌드 퀴즈{'\n'}불러오는 중..</LoadingText>
-      </LoadingIndicator>)}
+          <LottieView
+            style={{ width: 300, height: 300 }}
+            source={require("../assets/animations/Loading.json")}
+            autoPlay
+            loop={true}
+          />
+          <LoadingText>트렌드 퀴즈{"\n"}불러오는 중..</LoadingText>
+        </LoadingIndicator>
+      )}
     </ViewContainer>
   );
 }

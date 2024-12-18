@@ -58,8 +58,6 @@ const ArrowsContainer = styled.View`
   padding-right: 10px;
 `;
 
-const EmptyDayComponent = styled.View``;
-
 // Locale 설정
 LocaleConfig.locales["custom"] = {
   monthNames: [

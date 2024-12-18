@@ -13,13 +13,14 @@ const TouchableContainer = styled.TouchableOpacity`
   margin-top: 4px;
   margin-left: 2px;
   margin-right: 2px;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   justify-content: center;
   align-items: center;
   background-color: white;
 
-  border-radius: 18px;
+  border-radius: 20px;
+  border: 2px solid rgba(0, 0, 0, 0.04);
 
   ${(props) =>
     props.attendanceState >= 3
@@ -82,19 +83,21 @@ async function getStateFromStorage(
   else formattedDate = calendarDate.dateString;
 
   const storedState = await AsyncStorage.getItem(formattedDate);
+  // AsyncStorage.removeItem(formattedDate);
+  // const storedState = 0;
 
-  // date를 key로 저장되어 있던 state를 불러온다.
-  if (storedState !== null) {
-    // console.log("storedState return", formattedDate, "결과", storedState);
-    await setEmpty(false);
-    await setAttendanceState(parseInt(storedState));
-    // 더미
-    return storedState;
-  } else {
-    // console.log("false return");
-    await setEmpty(true); // 정보가 없다면 empty로 처리한다.
-    return false;
-  }
+  // // date를 key로 저장되어 있던 state를 불러온다.
+  // if (storedState !== null) {
+  //   // console.log("storedState return", formattedDate, "결과", storedState);
+  //   await setEmpty(false);
+  //   await setAttendanceState(parseInt(storedState));
+  //   // 더미
+  //   return storedState;
+  // } else {
+  // console.log("false return");
+  await setEmpty(true); // 정보가 없다면 empty로 처리한다.
+  return false;
+  // }
 }
 
 function Home_DayAttendanceCircle({
@@ -122,35 +125,35 @@ function Home_DayAttendanceCircle({
   // console.log(calendarDate, attendanceState, emptyState);
 
   return (
-    <Shadow
-      distance={3}
-      startColor="rgba(0, 0, 0, 0.03)"
-      offset={[0, 2]}
-      style={{ borderRadius: 15 }}
+    // <Shadow
+    //   distance={3}
+    //   startColor="rgba(0, 0, 0, 0.03)"
+    //   offset={[0, 2]}
+    //   style={{ borderRadius: 15 }}
+    // >
+    <TouchableContainer
+      onPress={type === "calendar" ? () => {} : () => onCalendarModalOpen()}
+      attendanceState={attendanceState}
+      emptyState={emptyState}
+      isToday={isToday}
     >
-      <TouchableContainer
-        onPress={type === "calendar" ? () => {} : () => onCalendarModalOpen()}
-        attendanceState={attendanceState}
-        emptyState={emptyState}
-        isToday={isToday}
-      >
-        {/* 날짜 */}
-        {attendanceState < 3 || isToday ? (
-          <DayText emptyState={emptyState} isToday={isToday}>
-            {type === "calendar" ? calendarDate.day : date.format("D")}
-          </DayText>
-        ) : (
-          <Ionicons
-            name="checkmark-sharp"
-            color={colors.Grayscale_100}
-            size={20}
-          ></Ionicons>
-        )}
+      {/* 날짜 */}
+      {attendanceState < 3 || isToday ? (
+        <DayText emptyState={emptyState} isToday={isToday}>
+          {type === "calendar" ? calendarDate.day : date.format("D")}
+        </DayText>
+      ) : (
+        <Ionicons
+          name="checkmark-sharp"
+          color={colors.Grayscale_100}
+          size={20}
+        ></Ionicons>
+      )}
 
-        {/* 요일 */}
-        {/* <Text style={styles.dayName}>{date.format("ddd")}</Text> */}
-      </TouchableContainer>
-    </Shadow>
+      {/* 요일 */}
+      {/* <Text style={styles.dayName}>{date.format("ddd")}</Text> */}
+    </TouchableContainer>
+    // </Shadow>
   );
 }
 

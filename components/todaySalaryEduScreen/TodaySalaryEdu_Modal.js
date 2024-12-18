@@ -18,6 +18,7 @@ import {
   isSavedSelector,
   todaySalaryContent,
 } from "../../Recoil/todaySalaryContent";
+import GetSeed from "../../assets/img/todaySalaryEduScreen/getSeed.png";
 
 const ModalOverlay = styled.View`
   flex: 1;
@@ -58,10 +59,10 @@ const ButtonText = styled(fonts.Caption2)`
   text-decoration: underline;
 `;
 
-const ImgContainer = styled.View`
+const ImgContainer = styled.Image`
   position: relative;
-  height: 106px;
-  width: 100%;
+  width: 58px;
+  height: 36px;
 
   flex-direction: row;
   justify-content: center;
@@ -70,8 +71,8 @@ const ImgContainer = styled.View`
 
 const CharacterImg = styled.Image`
   resizemode: cover;
-  width: 106px;
-  height: 106px;
+  width: 58px;
+  height: 36px;
   position: absolute;
   left: 48px;
 `;
@@ -119,10 +120,7 @@ function TodaySalaryEdu_Modal({ closeModal, fetchBookMarkState }) {
                 축하해요!
               </GuideText>
             </TextContainer>
-            <ImgContainer>
-              <CharacterImg source={Salary_Character} />
-              <FireworksRightImg source={Fireworks} />
-            </ImgContainer>
+            <ImgContainer source={GetSeed} />
             <PrimaryBtn
               type="active"
               text="학습 완료하고 홈으로 돌아가기"

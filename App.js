@@ -46,6 +46,7 @@ import CustomDrawer from "./components/NewsLetterMainScreen/CustomDrawer";
 import "./gesture-handler";
 import NavLetterActiveIcn from "./assets/img/nav/Nav_LetterActive.png";
 import NavLetterIcn from "./assets/img/nav/Nav_Letter.png";
+import AppInfoScreen from "./screens/AppInfoScreen";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -246,7 +247,7 @@ export default function App() {
       "투자 시작은 언제가 좋을 까? (2)",
       "내일의 경제를 읽는 법",
     ];
-    
+
     console.log("DrawerNavigator에서 params: ", route.params);
 
     return (
@@ -454,6 +455,13 @@ export default function App() {
               <Stack.Screen
                 name="LetterDrawer"
                 component={DrawerNavigator}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="AppInfo"
+                component={AppInfoScreen}
                 options={{
                   headerShown: false,
                 }}

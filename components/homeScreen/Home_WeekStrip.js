@@ -15,7 +15,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const Container = styled.View`
   flex: 1;
 `;
-const HeaderContainer = styled.View`
+const HeaderContainer = styled.TouchableOpacity`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -31,7 +31,7 @@ const HeaderText = styled(fonts.Body2M)`
   color: ${colors.Grayscale_80};
 `;
 
-const HeaderCalendarBtn = styled.TouchableOpacity``;
+const HeaderCalendarBtn = styled.View``;
 
 const calculateWeekOfMonth = (date) => {
   // 해당 월의 첫 번째 날 가져오기
@@ -99,6 +99,11 @@ const Home_WeekStrip = ({ onCalendarModalOpen }) => {
     }
   }
 
+  // 가장 가까운 일요일(이번 주 첫날) 계산
+  const getNearestSunday = () => {
+    return moment().startOf("week"); // 가장 가까운 일요일 반환
+  };
+
   useEffect(() => {
     // handleWeekChange(new Date());
     getPastMonthData().then((data) => SetPrevMonthData(data));
@@ -108,16 +113,16 @@ const Home_WeekStrip = ({ onCalendarModalOpen }) => {
 
   return (
     <Container>
-      <HeaderContainer>
+      <HeaderContainer onPress={onCalendarModalOpen}>
         <HeaderText>{headerText}</HeaderText>
-        <HeaderCalendarBtn onPress={onCalendarModalOpen}>
+        <HeaderCalendarBtn>
           <Ionicons name="calendar-clear-outline" size={20}></Ionicons>
         </HeaderCalendarBtn>
       </HeaderContainer>
       <CalendarStrip
         calendarHeaderStyle={{ height: 0, opacity: 0 }} // 헤더 숨기기
         style={styles.calendar}
-        startingDay={3}
+        startingDate={getNearestSunday()} // 주의 시작 날짜 설정
         dayComponent={(props) => {
           return (
             <Home_DayAttendanceCircle
@@ -130,7 +135,6 @@ const Home_WeekStrip = ({ onCalendarModalOpen }) => {
         }}
         scrollable
         onWeekChanged={handleWeekChange}
-        startingDate={new Date()} // 시작 날짜 설정
       />
     </Container>
   );

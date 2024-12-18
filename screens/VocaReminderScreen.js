@@ -146,8 +146,6 @@ function VocaReminderScreen({ route }) {
             </fonts.Caption2>
           ) : (
             <fonts.Caption2>
-              저번보다 <Text style={{ color: colors.text_green }}>2개</Text>의
-              단어를 더 기억하고 있어요! {"\n"}
               체크하지 못한 단어들은 다시 한번 복습해볼까요?
             </fonts.Caption2>
           )}

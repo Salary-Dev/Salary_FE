@@ -41,6 +41,8 @@ import { authToken } from "../Recoil/authToken";
 import { nicknameState } from "../Recoil/nicknameState";
 import DoneEventEmitter from "../events/DoneEventEmitter";
 import * as Haptics from "expo-haptics";
+import News1 from "../assets/img/todaySalaryEduScreen/news1.png";
+import News2 from "../assets/img/todaySalaryEduScreen/news2.png";
 
 const RootContainer = styled.View`
   flex: 1;
@@ -157,16 +159,21 @@ const NewsContentContainer = styled.View`
 `;
 
 // 임시
-const NewsContentBox = styled.View`
+const NewsContentBox = styled.ImageBackground`
   /* background-color: #c2c2c2; */
-  background-color: #b0b6aa;
+  /* background-color: #b0b6aa; */
   border-radius: 3px;
   align-items: center;
+
+  width: 100%;
+  height: 80px;
+
+  border-radius: 5px;
 `;
 
 const NewsText = styled(fonts.Caption2)`
   width: 100%;
-  color: #323232;
+  color: white;
 
   letter-spacing: 0.24px;
   padding: 19px 44px 52px 21px;
@@ -255,7 +262,7 @@ function TodaySalaryEduScreen({ route }) {
   function onBookmarkToggle() {
     console.log("토글 전 북마크 상태", bookMark);
     fetchBookMarkState(!bookMark);
-    Haptics.selectionAsync()
+    Haptics.selectionAsync();
   }
 
   async function fetchBookMarkState(tmpState) {
@@ -542,7 +549,10 @@ function TodaySalaryEduScreen({ route }) {
           </StoryTellingContainer>
           <Horizon />
           {/* 3. 관련 뉴스 확인 */}
-          <NewsContainer>
+          <NewsContainer
+            source={require("../assets/img/todaySalaryEduScreen/news1.png")}
+            style={{ flex: 1, resizeMode: "cover", justifyContent: "center" }}
+          >
             <NewsTitleContainer tooLong={wordData.word.length > 10}>
               <HighlightText
                 isFixed
@@ -558,13 +568,15 @@ function TodaySalaryEduScreen({ route }) {
               ></HighlightText>
               <Title style={{ lineHeight: 20 }}>관련 뉴스 확인하기</Title>
             </NewsTitleContainer>
-            <NewsContentContainer>
+            <NewsContentContainer
+              source={require("../assets/img/todaySalaryEduScreen/news2.png")}
+            >
               <Pressable
                 onPressIn={() => setIsTopNewsAvailable(true)}
                 onPressOut={() => setIsTopNewsAvailable(false)}
                 onPress={() => link(wordData.articles[0].url)}
               >
-                <NewsContentBox>
+                <NewsContentBox source={News1}>
                   {!isTopNewsAvailable ? (
                     <NewsText>{wordData.articles[0].title}</NewsText>
                   ) : (
@@ -596,7 +608,7 @@ function TodaySalaryEduScreen({ route }) {
                 onPressOut={() => setIsBottomNewsAvailable(false)}
                 onPress={() => link(wordData.articles[1].url)}
               >
-                <NewsContentBox>
+                <NewsContentBox source={News2}>
                   {!isBottomNewsAvailable ? (
                     <NewsText numberOfLines={1} ellipsizeMode="tail">
                       {wordData.articles[1].title}

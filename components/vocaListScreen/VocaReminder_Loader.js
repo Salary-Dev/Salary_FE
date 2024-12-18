@@ -32,8 +32,10 @@ const TextContainer = styled.View`
 const TextDescr = styled(fonts.H5)`
   color: #000000;
   text-align: center;
-  line-height: 25px;
+  line-height: 30px;
   position: absolute;
+
+  word-break: keep-all;
 `;
 
 const VocaReminder_Loader = () => {
@@ -58,8 +60,8 @@ const VocaReminder_Loader = () => {
       </View>
       <TextContainer>
         <TextDescr>
-          {nickname}님이 {"\n"} 단어를 리마인드 할 수 있도록 {"\n"}랜덤으로 10개
-          단어를 {"\n"} 추출하고 있어요
+          {nickname}님이 단어를 {"\n"}리마인드할 수 있도록 {"\n"}
+          랜덤으로 10개 단어를 {"\n"} 추출하고 있어요
         </TextDescr>
       </TextContainer>
     </Container>

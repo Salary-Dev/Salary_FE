@@ -102,7 +102,10 @@ function PrimaryModal({
   const handleNavigateHome = () => {
     closeModal();
     setTimeout(() => {
-      navigation.goBack();
+      // 스택에 쌓여 있는 홈화면으로 돌아감
+      navigation.goBack(-1);
+      // navigation.navigate("BottomTab");
+      // navigate로 변경함
     }, 300);
   };
 

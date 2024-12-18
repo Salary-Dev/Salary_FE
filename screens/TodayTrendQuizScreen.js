@@ -15,6 +15,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { authToken } from "../Recoil/authToken";
 import { todayTrendSelector } from "../Recoil/todayAttendanceDetail";
 import { todayAttendanceState } from "../Recoil/todayAttendanceState";
+import DoneEventEmitter from "../events/DoneEventEmitter";
 import * as Haptics from "expo-haptics";
 
 const ViewContainer = styled.SafeAreaView`
@@ -289,41 +290,16 @@ function TodayTrendQuizScreen() {
     setIsModalVisible(false); // 상태 초기화
   }, []);
 
-  const handleFinishStudy = async () => {
-    try {
-      const res = await axios.post(
-        `${BASE_URL}/trend-quiz/update-status?trend=${true}`,
-        {},
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
-      const resSeed = await axios.patch(
-        `${BASE_URL}/seed/update`,
-        {
-          seed_earned: 5,
-          seed_used: 0,
-        },
-        { headers: { Authorization: token } }
-      );
-      console.log("시드 patch", resSeed.data.status);
-      if (!trendState) {
-        setTrendState(true);
-        setAttendanceState((prev) => prev + 1); // attendance state에 1을 더해주어 알맞게 상태 관리
-        // 중복 처리되어서는 안됨!!
-      }
-      console.log(res.data);
-      navigation.navigate("BottomTab");
-    } catch (error) {
-      console.log(error);
-    }
+  const handleFinishStudy = () => {
+    // navigation.navigate("BottomTab"); 이거 필요한가?
+    DoneEventEmitter.emit("trendDone");
+    console.log("이벤트 emit");
   };
 
   useEffect(() => {
     if (isModalVisible) {
       handleFinishStudy();
+      // 이벤트를 발행함.
     }
   }, [isModalVisible]);
 

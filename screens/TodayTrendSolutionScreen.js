@@ -151,7 +151,7 @@ function TodayTrendSolutionScreen({ navigation, route }) {
   //       // 중복 처리되어서는 안됨!!
   //     }
   //     console.log(res.data);
-      
+
   //   } catch (error) {
   //     console.log(error);
   //   }
@@ -189,7 +189,7 @@ function TodayTrendSolutionScreen({ navigation, route }) {
             {trendState ? (
               <></>
             ) : (
-              <CompleteBtn onPress={() => navigation.navigate("BottomTab")}>
+              <CompleteBtn onPress={() => navigation.goBack()}>
                 <CompleteBtnText>트렌드 퀴즈 완료하기</CompleteBtnText>
               </CompleteBtn>
             )}

@@ -13,7 +13,7 @@ import { BASE_URL } from "@env";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { useRecoilValue } from "recoil";
 import { authToken } from "../Recoil/authToken";
-import { nicknameState} from "../Recoil/nicknameState";
+import { nicknameState } from "../Recoil/nicknameState";
 
 const ViewContainer = styled.SafeAreaView`
   flex: 1;
@@ -214,7 +214,7 @@ function VocaSearchScreen({ navigation }) {
 
   // 토큰 추가
   const token = useRecoilValue(authToken);
-  console.log("단어검색에서 토큰값: ", token);
+  // console.log("단어검색에서 토큰값: ", token);
 
   useEffect(() => {
     const fetchRecommendedData = async () => {

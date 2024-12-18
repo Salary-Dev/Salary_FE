@@ -1,20 +1,15 @@
-import { useEffect, useState } from "react";
-import { Image, Pressable, Text, View } from "react-native";
 import styled, { css } from "styled-components";
 import colors from "../../styles/colors";
 import fonts from "../../styles/fonts";
 import ellipse_done from "../../common/homeScreen/ellipse_done.png";
 import ellipse_yet from "../../common/homeScreen/ellipse_yet.png";
 import Home_Article_List from "./Home_Article_List";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import {
   todayArticleSelector,
   todayAttendanceDetail,
 } from "../../Recoil/todayAttendanceDetail";
-import { todayAttendanceState } from "../../Recoil/todayAttendanceState";
-import axios from "axios";
-import { BASE_URL } from "@env";
-import { authToken } from "../../Recoil/authToken";
+import DoneEventEmitter from "../../events/DoneEventEmitter";
 
 const Container = styled.View`
   flex: 1;
@@ -55,49 +50,43 @@ const DoneMarker = styled.Image`
 `;
 
 function Home_Article() {
-  // token 추가
-  const token = useRecoilValue(authToken);
-
   // detailState 관리
   const articleState = useRecoilValue(todayArticleSelector);
-  const setArticleState = useSetRecoilState(todayArticleSelector);
 
-  // attendanceState 관리
-  const [attendaceState, setAttendanceState] =
-    useRecoilState(todayAttendanceState);
-
-  async function postAritcleAttendance() {
-    try {
-      const res = await axios.post(
-        `${BASE_URL}/shorts/update-status?article=true`,
-        {},
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
-      console.log("뉴스 학습 완료 api post", res.data.status);
-      const resSeed = await axios.patch(
-        `${BASE_URL}/seed/update`,
-        {
-          seed_earned: 5,
-          seed_used: 0,
-        },
-        { headers: { Authorization: token } }
-      );
-      console.log("시드 patch", resSeed.data.status);
-      return true;
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  // async function postAritcleAttendance() {
+  //   try {
+  //     const res = await axios.post(
+  //       `${BASE_URL}/shorts/update-status?article=true`,
+  //       {},
+  //       {
+  //         headers: {
+  //           Authorization: token,
+  //         },
+  //       }
+  //     );
+  //     console.log("뉴스 학습 완료 api post", res.data.status);
+  //     const resSeed = await axios.patch(
+  //       `${BASE_URL}/seed/update`,
+  //       {
+  //         seed_earned: 5,
+  //         seed_used: 0,
+  //       },
+  //       { headers: { Authorization: token } }
+  //     );
+  //     console.log("시드 patch", resSeed.data.status);
+  //     return true;
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
 
   function handleDoneTodayArticle() {
-    if (postAritcleAttendance() && !articleState) {
-      setArticleState(true); // 전역 상태
-      setAttendanceState((prev) => prev + 1);
-    }
+    // if (postAritcleAttendance() && !articleState) {
+    //   setArticleState(true); // 전역 상태
+    //   setAttendanceState((prev) => prev + 1);
+    // }
+    DoneEventEmitter.emit("newsDone");
+    console.log("이벤트 emit");
   }
 
   return (

@@ -239,7 +239,14 @@ export default function App() {
 
   function DrawerNavigator({ route }) {
     const editor = route.params.editor;
-    const articleList = route.params.articleList;
+    const articleList = [
+      "돈은 어떻게 흐르는가?",
+      "경제 위기, 우리가 할 수 있는 일",
+      "투자 시작은 언제가 좋을까?",
+      "투자 시작은 언제가 좋을 까? (2)",
+      "내일의 경제를 읽는 법",
+    ];
+    
     console.log("DrawerNavigator에서 params: ", route.params);
 
     return (

@@ -7,6 +7,7 @@ import {
   Image,
   Pressable,
   Linking,
+  Alert,
 } from "react-native";
 import styled from "styled-components";
 import articleArrow from "../../assets/img/homeScreen/articleArrow.png";
@@ -41,6 +42,11 @@ function Home_Article_List({ handleDoneTodayArticle }) {
     "DALL·E 2024-11-26 15.55.18 - An eye-catching and dynamic image representing the concept of hot issues, featuring bold headlines on a digital news interface displayed on a tablet. .webp",
     "DALL·E 2024-11-26 15.55.55 - A sophisticated and dynamic image representing the concept of celebrities, featuring a red carpet event with bright camera flashes, a blurred silhouet.webp",
   ];
+
+  function replaceHtmlEntities(input) {
+    // Replace &quot; with "
+    return input.replace(/&quot;/g, '"');
+  }
 
   const getNewsData = async () => {
     try {
@@ -84,21 +90,39 @@ function Home_Article_List({ handleDoneTodayArticle }) {
   }, [fetchedData]);
 
   const handlePress = async (url) => {
-    try {
-      const supported = await Linking.canOpenURL(url);
-      if (supported) {
-        await Linking.openURL(url);
-        if (!isArticleWatched) {
-          handleDoneTodayArticle();
-          setIsArticleWatched(true);
-        }
-      } else {
-        Alert.alert(`이 URL을 열 수 없습니다. ${url}`);
-      }
-    } catch (error) {
-      Alert.alert("에러 발생: ", error);
-    }
+    console.log(url);
+    Alert.alert(
+      "URL 이동 확인", // 제목
+      `다음 URL로 이동하시겠습니까?\n\n${url}`, // 메시지
+      [
+        {
+          text: "취소",
+          style: "cancel", // 취소 버튼
+        },
+        {
+          text: "확인", // 확인 버튼
+          onPress: async () => {
+            try {
+              const supported = await Linking.canOpenURL(url);
+              if (supported) {
+                await Linking.openURL(url);
+                if (!isArticleWatched) {
+                  handleDoneTodayArticle();
+                  setIsArticleWatched(true);
+                }
+              } else {
+                Alert.alert(`이 URL을 열 수 없습니다. ${url}`);
+              }
+            } catch (error) {
+              Alert.alert("에러 발생: ", error.toString());
+            }
+          },
+        },
+      ],
+      { cancelable: true }
+    );
   };
+  
 
   useEffect(() => {
     const sendData = async () => {
@@ -123,7 +147,7 @@ function Home_Article_List({ handleDoneTodayArticle }) {
       >
         <View style={styles.overlay} />
         <Image source={articleArrow} style={styles.iconImage}></Image>
-        <Text style={styles.title}>{item.title}</Text>
+        <Text style={styles.title}>{replaceHtmlEntities(item.title)}</Text>
       </ImageBackground>
     </Pressable>
   );

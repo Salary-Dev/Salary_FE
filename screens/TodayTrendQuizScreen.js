@@ -16,6 +16,7 @@ import { authToken } from "../Recoil/authToken";
 import { todayTrendSelector } from "../Recoil/todayAttendanceDetail";
 import { todayAttendanceState } from "../Recoil/todayAttendanceState";
 import DoneEventEmitter from "../events/DoneEventEmitter";
+import * as Haptics from "expo-haptics";
 
 const ViewContainer = styled.SafeAreaView`
   background-color: white;
@@ -258,6 +259,14 @@ function TodayTrendQuizScreen() {
     // 무언가 데이터를 처리해서...
     // 모달 띄우기
     openModal();
+    const isSucceeded = answersState.find(
+      (item) => item.isSelected && item.isCorrect
+    );
+    if (isSucceeded) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    } else {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+    }
   };
 
   // 모달 관리

@@ -1,4 +1,5 @@
 import { FlatList, View, StyleSheet } from "react-native";
+import { useState, useEffect } from "react";
 import styled from "styled-components/native";
 import colors from "../../styles/colors";
 import { LinearGradient } from "expo-linear-gradient";
@@ -6,6 +7,10 @@ import fonts from "../../styles/fonts";
 import BlueCheck from "../../assets/img/NewsLetterMainScreen/BlueCheck.png";
 import ArrowBtn from "../../assets/img/signUpScreen/ArrowBtn.png";
 import { useNavigation } from "@react-navigation/native";
+import { useRecoilValue } from "recoil";
+import { authToken } from "../../Recoil/authToken";
+import axios from "axios";
+import { BASE_URL } from "@env";
 
 const SubscribingListWrapper = styled.View`
   padding: 14px 20px 8px;
@@ -81,6 +86,23 @@ const RightArrowImg = styled.Image`
 
 function SubscribingLetterList() {
   const navigation = useNavigation();
+  const token = useRecoilValue(authToken);
+  const [fetchedData, setFetchedData] = useState([]); 
+
+  const getSubscribingList = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/economy-letter/subscribe`, {
+        headers: { Authorization: token },
+      });
+      setFetchedData(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getSubscribingList();
+  }, []);
 
   const DATA = [
     {
@@ -88,33 +110,39 @@ function SubscribingLetterList() {
       content: "중국 경제 둔화, 우리가 어떻게 대응해야 할까?",
       isNew: true,
       uploadDate: "2024.11.24",
-      articleList: ["망고망고 으라차차",
-  "까리까리 까리의의의",
-  "마르모라아 으으오실",
-  "다시 걸어갈 수 있도록",
-  "끼룩끼룩 독수리의 여행",]
+      articleList: [
+        "망고망고 으라차차",
+        "까리까리 까리의의의",
+        "마르모라아 으으오실",
+        "다시 걸어갈 수 있도록",
+        "끼룩끼룩 독수리의 여행",
+      ],
     },
     {
       editor: "청경채",
       content: "오늘은 기술주 vs 가치주, 어느 쪽이 유망한지....",
       isNew: false,
       uploadDate: "2024.12.02",
-      articleList: ["망고망고 으라차차",
+      articleList: [
+        "망고망고 으라차차",
         "까리까리 까리의의의",
         "마르모라아 으으오실",
         "다시 걸어갈 수 있도록",
-        "끼룩끼룩 독수리의 여행",]
+        "끼룩끼룩 독수리의 여행",
+      ],
     },
   ];
 
   const renderItem = ({ item }) => {
     return (
       <LetterBox
-        onPress={() => navigation.navigate("LetterDrawer", {
-          editor: item.editor,
-          uploadDate: item.uploadDate,
-          articleList: item.articleList
-        })}
+        onPress={() =>
+          navigation.navigate("LetterDrawer", {
+            editor: item.editor,
+            uploadDate: item.uploadDate,
+            title: item.title
+          })
+        }
       >
         <LetterBoxInner>
           <View style={styles.RowView}>
@@ -124,7 +152,7 @@ function SubscribingLetterList() {
                 <EditorName>{item.editor}</EditorName>
                 <BlueCheckImg source={BlueCheck} />
               </EditorNameContainer>
-              <ContentText isNew={item.isNew}>
+              <ContentText isNew={true}>
                 {item.isNew ? "새 레터가 도착했어요!" : item.content}
               </ContentText>
             </TextContainer>
@@ -147,7 +175,7 @@ function SubscribingLetterList() {
           <Title>(닉네임)님이 구독 중인 경제 레터</Title>
           <FlatList
             style={styles.LetterBoxList}
-            data={DATA}
+            data={fetchedData}
             renderItem={renderItem}
             keyExtractor={(item) => item.content}
             showsVerticalScrollIndicator={false}

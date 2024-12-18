@@ -4,6 +4,11 @@ import fonts from "../../styles/fonts";
 import colors from "../../styles/colors";
 import BlueCheck from "../../assets/img/NewsLetterMainScreen/BlueCheck.png";
 import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
+import { BASE_URL } from "@env";
+import { useRecoilValue } from "recoil";
+import { authToken } from "../../Recoil/authToken";
+import { useEffect, useState } from "react";
 
 const LetterBoxContainer = styled.TouchableOpacity`
   width: 100%;
@@ -95,6 +100,22 @@ const DATA = [
 
 function ArrivedLetterList() {
   const navigation = useNavigation();
+  const [fetchedData, setFetchedData] = useState([]);
+  const token = useRecoilValue(authToken);
+
+  const getArrivedList = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/economy-letter/normal`)
+      console.log(res.data);
+      setFetchedData(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    getArrivedList();
+  }, []);
 
   const renderItem = ({ item }) => {
     return (
@@ -103,6 +124,7 @@ function ArrivedLetterList() {
           navigation.navigate("NewsLetterArticle", {
             editor: item.editor,
             uploadDate: item.uploadDate,
+            title: item.title
           })
         }
       >
@@ -124,7 +146,7 @@ function ArrivedLetterList() {
   return (
     <FlatList
       style={styles.List}
-      data={DATA}
+      data={fetchedData}
       renderItem={renderItem}
       keyExtractor={(item) => item.title}
     />

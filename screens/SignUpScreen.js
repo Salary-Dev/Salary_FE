@@ -1,14 +1,14 @@
 import { useState, useRef, useEffect, useReducer } from "react";
 import styled from "styled-components/native";
 import { StatusBar } from "expo-status-bar";
-import { Dimensions, Keyboard, StyleSheet } from "react-native";
+import { Dimensions, Keyboard, StyleSheet, Animated } from "react-native";
 
 import TermsOfUseBtn from "../components/signUpScreen/TermsOfUseBtn";
 import CompleteBtn from "../components/signUpScreen/CompleteBtn";
 import CheckBtn_Off from "../assets/img/signUpScreen/CheckBtn_Off.png";
 import CheckBtn_On from "../assets/img/signUpScreen/CheckBtn_On.png";
 import Salary_Character from "../assets/img/signUpScreen/Salary_Character.png";
-import Fireworks from "../assets/img/signUpScreen/Fireworks.png";
+import ArrowBtn from "../assets/img/vocaSearchScreen/ArrowBtn.png";
 import axios from "axios";
 import { BASE_URL } from "@env";
 import fonts from "../styles/fonts";
@@ -19,13 +19,27 @@ import ConfirmingModal from "../components/signUpScreen/ConfirmingModal";
 import Confetti from "../assets/animations/Confetti.json";
 import LottieView from "lottie-react-native";
 import TermsOfUseDetail from "../components/signUpScreen/TermsOfUseDetail";
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import { FadeIn, FadeOut } from "react-native-reanimated";
 
 const windowWidth = Dimensions.get("window").width;
 
 const ViewContainer = styled.SafeAreaView`
   flex: 1;
   background-color: white;
+`;
+
+const ArrowBtnWrapper = styled.Pressable`
+  justify-content: center;
+  padding-left: 6px;
+  height: 41px;
+  width: 32px;
+`;
+
+const ArrowBtnImg = styled.Image`
+  transform: scaleX(-1);
+  resizemode: contain;
+  width: 8px;
+  height: 14px;
 `;
 
 const Modal = styled.Modal``;
@@ -101,7 +115,7 @@ const AlertText = styled(fonts.Caption1)`
 `;
 
 const PwContainer = styled.View`
-  margin: 30px 0px 100px;
+  margin: 30px 0px 250px;
 `;
 const InputLabel = styled(fonts.Body2R)`
   color: #000;
@@ -139,7 +153,7 @@ const NickNameInput = styled(Input)`
 const HeaderText = styled.Text`
   font-size: 30px;
   font-weight: 800;
-  margin: 48px 0px;
+  margin: 20px 0px 50px;
 `;
 
 const AgeInputContainer = styled.View`
@@ -174,7 +188,7 @@ const GenderInputContainer = styled.View`
   width: 100%;
   flex-direction: row;
   margin-top: 4px;
-  margin-bottom: 60px;
+  margin-bottom: 350px;
   justify-content: space-between;
 `;
 
@@ -265,6 +279,34 @@ function SignUpScreen({ navigation }) {
   const [subPassword, setSubPassword] = useState("");
   const [detailNeeded, setDetailNeeded] = useState(false);
   const [indexOfDetail, setIndexOfDetail] = useState(0);
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+  const buttonPosition = useState(new Animated.Value(0))[0]; // 애니메이션 초기 값
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => setKeyboardVisible(true)
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => setKeyboardVisible(false)
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
+  useEffect(() => {
+    // 버튼의 위치를 키보드 상태에 따라 조정
+    Animated.timing(buttonPosition, {
+      toValue: keyboardVisible ? 270 : 50, // 키보드가 올라오면 100px 위로
+      duration: 1,
+      useNativeDriver: false,
+    }).start();
+  }, [keyboardVisible]);
 
   // 인풋 검증 로직
 
@@ -486,7 +528,11 @@ function SignUpScreen({ navigation }) {
               </ModalView>
             </ModalBackdrop>
           </Modal>
+
           <SignUpView>
+            <ArrowBtnWrapper onPress={() => navigation.goBack(-1)}>
+              <ArrowBtnImg source={ArrowBtn} />
+            </ArrowBtnWrapper>
             <HeaderText>회원가입</HeaderText>
 
             <InputLabel>ID</InputLabel>
@@ -526,11 +572,23 @@ function SignUpScreen({ navigation }) {
                 비밀번호가 일치하지 않습니다.
               </AlertText>
             </PwContainer>
-            <CompleteBtn
-              onPress={() => setFirstModalVisible(true)}
-              isInputFull={isFirstCorrect}
-              text="다음 단계로"
-            />
+            <Animated.View
+              style={[
+                {
+                  position: "absolute",
+                  width: "100%",
+                  alignSelf: "center",
+                  
+                },
+                { bottom: buttonPosition },
+              ]}
+            >
+              <CompleteBtn
+                onPress={() => setFirstModalVisible(true)}
+                isInputFull={isFirstCorrect}
+                text="다음 단계로"
+              />
+            </Animated.View>
           </SignUpView>
         </>
       )}
@@ -549,6 +607,9 @@ function SignUpScreen({ navigation }) {
           </Modal>
 
           <SignUpView>
+            <ArrowBtnWrapper onPress={() => navigation.goBack(-1)}>
+              <ArrowBtnImg source={ArrowBtn} />
+            </ArrowBtnWrapper>
             <InputContainer>
               <HeaderText>회원가입</HeaderText>
               <InputLabel>닉네임</InputLabel>
@@ -595,11 +656,22 @@ function SignUpScreen({ navigation }) {
                   </GenderBtnText>
                 </GenderBtn>
               </GenderInputContainer>
+              <Animated.View
+              style={[
+                {
+                  position: "absolute",
+                  width: "100%",
+                  alignSelf: "center",
+                  
+                },
+                { bottom: buttonPosition },
+              ]}
+            >
               <CompleteBtn
                 onPress={() => setSecondModalVisible(true)}
                 isInputFull={isSecondCorrect}
                 text="샐러리 시작하기"
-              />
+              /></Animated.View>
             </InputContainer>
           </SignUpView>
         </>

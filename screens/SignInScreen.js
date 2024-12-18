@@ -8,6 +8,7 @@ import SignInText_SALARY from "../assets/img/signInScreen/SignInText_SALARY.png"
 import GoogleLoginBtn from "../assets/img/signInScreen/GoogleLoginBtn.png";
 import ShowPassword from "../assets/img/signInScreen/ShowPassword.png";
 import HidePassword from "../assets/img/signInScreen/HidePassword.png";
+import ArrowBtn from "../assets/img/vocaSearchScreen/ArrowBtn.png";
 import fonts from "../styles/fonts";
 import colors from "../styles/colors";
 import axios from "axios";
@@ -116,10 +117,26 @@ const SignUpBtnText = styled.Text`
   text-underline-offset: auto;
 `;
 
+const ArrowBtnWrapper = styled.Pressable`
+  justify-content: center;
+  padding-left: 6px;
+  height: 41px;
+  width: 32px;
+  margin-top: 80px;
+  
+`;
+
+const ArrowBtnImg = styled.Image`
+  transform: scaleX(-1);
+  resizemode: contain;
+  width: 8px;
+  height: 14px;
+`;
+
 const IdLoginTitleContainer = styled.View`
   position: relative;
   width: 100%;
-  margin-top: 168px;
+  margin-top: 50px;
   height: 72px;
 `;
 
@@ -279,8 +296,11 @@ function SignInScreen({ onEnter, navigation }) {
           </SignUpBtnContainer>
         </>
       ) : (
-        <>
+        <><ArrowBtnWrapper onPress={() => setIsIdLogin(false)}>
+              <ArrowBtnImg source={ArrowBtn} />
+            </ArrowBtnWrapper>
           <IdLoginTitleContainer>
+            
             <IdLoginTitle>로그인</IdLoginTitle>
             <IdLoginTitle_ShadowImage source={SignInText_SALARY} />
           </IdLoginTitleContainer>

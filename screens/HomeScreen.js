@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Image,
   Modal,
+  Platform,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import styled from "styled-components/native";
@@ -49,6 +50,7 @@ import { authToken } from "../Recoil/authToken";
 import { nicknameState } from "../Recoil/nicknameState";
 import DoneEventEmitter from "../events/DoneEventEmitter";
 import LottieView from "lottie-react-native";
+import Home_Confetti from "../components/homeScreen/Home_Confetti";
 
 const ContentsContainer = styled.View`
   background: ${colors.bg};
@@ -284,9 +286,15 @@ function HomeScreen() {
           setAttendanceState((prev) => prev + 3); // attendance state에 1을 더해주어 알맞게 상태 관리
           // 중복 처리되어서는 안됨!!
         }
+
         if (!isAnimationVisible) {
-          setAnimationVisible(true);
-          setTimeout(() => animationRef.current?.play(), 0); // 즉시 재생
+          // setAnimationVisible(true);
+          setTimeout(() => {
+            setAnimationVisible(true);
+          }, 1500);
+          scrollViewRef.current.scrollTo({ y: 0, animated: true });
+          console.log("Scrolled to top");
+          // setTimeout(() => animationRef.current?.play(), 0); // 즉시 재생
         }
 
         return true;
@@ -334,7 +342,10 @@ function HomeScreen() {
           // 중복 처리되어서는 안됨!!
         }
         if (!isAnimationVisible) {
-          triggerAnimation();
+          // triggerAnimation();
+          setAnimationVisible(true);
+          scrollViewRef.current.scrollTo({ y: 0, animated: true });
+          console.log("Scrolled to top");
         }
         // navigation.navigate("BottomTab"); 이거 필요한가?
       } catch (error) {
@@ -387,7 +398,12 @@ function HomeScreen() {
           setAttendanceState((prev) => prev + 1);
         }
         if (!isAnimationVisible) {
-          triggerAnimation();
+          // triggerAnimation();
+          setTimeout(() => {
+            setAnimationVisible(true);
+            scrollViewRef.current.scrollTo({ y: 0, animated: true });
+            console.log("Scrolled to top");
+          }, 7000);
         }
       } catch (error) {
         console.log(error);
@@ -469,6 +485,7 @@ function HomeScreen() {
 
     const onBlur = () => {
       isFocusedRef.current = false;
+      setAnimationVisible(false);
       console.log("Screen is unfocused. Events will be queued.");
     };
 
@@ -514,26 +531,17 @@ function HomeScreen() {
   if (!loading)
     return (
       <SafeAreaView style={styles.rootScreen}>
-        {isAnimationVisible && (
-          <View style={styles.overlay}>
-            <View style={styles.animationContainer} pointerEvents="box-none">
-              {/* 오버레이 내부의 최상단에 LottieView */}
-              <LottieView
-                ref={animationRef}
-                source={require("../assets/animations/Confetti.json")} // Lottie JSON 파일 경로
-                autoPlay={false} // 수동 재생
-                loop={false} // 반복 X
-                onAnimationFinish={handleAnimationFinish} // 애니메이션 종료 이벤트
-                style={styles.animation}
-              />
-            </View>
-          </View>
-        )}
+        <Home_Confetti
+          isVisible={isAnimationVisible}
+          onFinish={handleAnimationFinish}
+        />
         <ScrollView
           ref={scrollViewRef}
           automaticallyAdjustContentInsets={false}
         >
-          {/* <Home_WeekStrip onCalendarModalOpen={onCalendarModalOpen} /> */}
+          {Platform.OS === "ios" && (
+            <Home_WeekStrip onCalendarModalOpen={onCalendarModalOpen} />
+          )}
           {/* 상단 프로세스 바 */}
           <ProcessBarWrapper>
             <StepContainer>

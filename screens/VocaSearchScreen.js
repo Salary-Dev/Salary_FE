@@ -212,6 +212,7 @@ function VocaSearchScreen() {
   const [inputText, setInputText] = useState("");
   const [keywordList, setKeywordList] = useState([]);
   const nickname = useRecoilValue(nicknameState);
+  const navigation = useNavigation();
 
   const navigation = useNavigation();
 

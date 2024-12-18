@@ -5,6 +5,8 @@ import colors from "../styles/colors";
 import Hamburger from "../assets/img/NewsLetterMainScreen/Hamburger.png";
 import BlueCheck from "../assets/img/NewsLetterMainScreen/BlueCheck.png";
 import { Pressable } from "react-native";
+import profile_1 from "../assets/img/NewsLetterMainScreen/profile_1.png";
+import article_1 from "../assets/img/NewsLetterMainScreen/article_1.png";
 
 const ViewContainer = styled.View`
   flex: 1;
@@ -24,11 +26,11 @@ const EditorInfoContainer = styled.View`
   gap: 10px;
 `;
 
-const ProfileImg = styled.View`
+const ProfileImg = styled.Image`
   width: 26px;
   height: 26px;
   border-radius: 18px;
-  background-color: #d9d9d9;
+  
 `;
 
 const EditorInfo_Middle = styled.View`
@@ -54,21 +56,29 @@ const MoreLetterImg = styled.Image`
   width: 28px;
   height: 28px;
 `;
-const LetterBodyImg = styled.View`
+const LetterBodyImg = styled.Image`
   width: 100%;
   height: 170px;
-  background-color: #d9d9d9;
+  resize-mode: cover;
 `;
+
+const LetterBodyWrapper = styled.ScrollView`
+  height: 200px;
+  width: 100%;
+  margin-top: 27px;
+`;
+
 const LetterBody = styled.Text`
   width: 100%;
   line-height: 30px;
-  margin-top: 27px;
+  padding: 0px 10px;
   color: ${colors.Grayscale_100};
   font-family: Inter;
   font-size: 20px;
   font-style: normal;
   font-weight: 600;
   line-height: 30px;
+  word-break: keep-all;
 `;
 
 const Data = [
@@ -80,36 +90,25 @@ const Data = [
 ];
 
 function NewsLetterArticleScreen({ navigation, route }) {
-  console.log(route.params);
-
   return (
     <ViewContainer>
       <LetterHeader>
         <EditorInfoContainer>
-          <ProfileImg />
+          <ProfileImg source={profile_1}/>
           <EditorInfo_Middle>
             <EditorName>{route.params.editor}</EditorName>
             <UploadDate>{route.params.uploadDate}</UploadDate>
           </EditorInfo_Middle>
           <BlueCheckImg source={BlueCheck} />
         </EditorInfoContainer>
-        <Pressable
-          onPress={() => navigation.openDrawer()}
-        >
+        <Pressable onPress={() => navigation.openDrawer()}>
           <MoreLetterImg source={Hamburger} />
         </Pressable>
       </LetterHeader>
-      <LetterBodyImg />
-      <LetterBody>
-        요즘 중국 경제가 좀 어려워지고 있다는 얘기, 많이 들어보셨죠? 그만큼
-        우리나라에도 영향이 있을 수밖에 없어요. 중국은 우리 수출의 큰 비중을
-        차지하는 나라라서 그쪽 경기가 안 좋으면 자연스럽게 우리도 영향을 받을 수
-        있거든요. {"\n"}
-        {"\n"}예를 들어, 중국이 잘 팔리는 물건이 줄어들면 우리 제품을 사는
-        수요도 줄어들 수 있겠죠. 그런데 이럴 때일수록 우리가 해야 할 일은 다양한
-        시장을 공략하는 것이에요. 중국에만 의존할게 아니라, 다른 나라로 수출을
-        늘리거나 내수 활성화를 시도해보는 거죠.
-      </LetterBody>
+      <LetterBodyImg source={article_1}/>
+      <LetterBodyWrapper>
+        <LetterBody>{route.params.body}</LetterBody>
+      </LetterBodyWrapper>
     </ViewContainer>
   );
 }

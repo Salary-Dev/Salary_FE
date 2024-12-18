@@ -22,6 +22,10 @@ import PrimaryModal from "../common/PrimaryModal";
 import { useRecoilValue } from "recoil";
 import { todaySalaryContent } from "../Recoil/todaySalaryContent";
 import * as Haptics from "expo-haptics";
+import { Audio } from 'expo-av';
+import ErrorSound from "../assets/sounds/ErrorSound.mp3";
+import SuccessSound from "../assets/sounds/SuccessSound.mp3";
+
 
 const Container = styled.View`
   align-items: center;
@@ -207,12 +211,29 @@ function TodaySalaryScreen() {
   //// 모달 관리
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  function openModal() {
+  // 소리 추가 
+  const [sound, setSound] = useState();
+
+  async function playSound(type) {
+    const { sound } = await Audio.Sound.createAsync(
+      type // 로컬 사운드 파일
+    );
+    setSound(sound);
+    await sound.playAsync();
+  }
+
+  useEffect(() => {
+    return sound ? () => { sound.unloadAsync() } : undefined;
+  }, [sound])
+
+  async function openModal() {
     setIsModalVisible(true);
     if (checkIfAnswer()) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      playSound(SuccessSound);
     } else {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+      playSound(ErrorSound);
     }
   }
 

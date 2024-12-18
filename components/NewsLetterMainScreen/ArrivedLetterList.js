@@ -9,6 +9,13 @@ import { BASE_URL } from "@env";
 import { useRecoilValue } from "recoil";
 import { authToken } from "../../Recoil/authToken";
 import { useEffect, useState } from "react";
+import profile_1 from "../../assets/img/NewsLetterMainScreen/profile_1.png";
+import profile_2 from "../../assets/img/NewsLetterMainScreen/profile_2.png";
+import profile_3 from "../../assets/img/NewsLetterMainScreen/profile_3.png";
+import profile_4 from "../../assets/img/NewsLetterMainScreen/profile_4.png";
+import article_1 from "../../assets/img/NewsLetterMainScreen/article_1.png";
+import article_2 from "../../assets/img/NewsLetterMainScreen/article_2.png";
+import article_3 from "../../assets/img/NewsLetterMainScreen/article_3.png";
 
 const LetterBoxContainer = styled.TouchableOpacity`
   width: 100%;
@@ -33,10 +40,9 @@ const LetterInfoContainer = styled.View`
   align-items: center;
 `;
 
-const ProfileImg = styled.View`
+const ProfileImg = styled.Image`
   width: 16px;
   height: 16px;
-  background-color: #d9d9d9;
   border-radius: 8px;
   margin-right: 6px;
 `;
@@ -64,11 +70,10 @@ const ElapsedTime = styled(fonts.Caption1)`
   font-weight: 500;
 `;
 
-const LetterImg = styled.View`
+const LetterImg = styled.Image`
   width: 82px;
   height: 82px;
   border-radius: 12px;
-  background-color: #d9d9d9;
 `;
 
 const DATA = [
@@ -98,7 +103,7 @@ const DATA = [
   },
 ];
 
-function ArrivedLetterList() {
+function ArrivedLetterList({ onOpenModal }) {
   const navigation = useNavigation();
   const [fetchedData, setFetchedData] = useState([]);
   const token = useRecoilValue(authToken);
@@ -106,7 +111,7 @@ function ArrivedLetterList() {
   const getArrivedList = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/economy-letter/normal`);
-      console.log(res.data);
+      console.log("도착한 경제레터 조회 api: ", res.data);
       setFetchedData(res.data);
     } catch (error) {
       console.log(error);
@@ -117,39 +122,43 @@ function ArrivedLetterList() {
     getArrivedList();
   }, []);
 
-  const renderItem = ({ item }) => {
+  const profileList = [
+    profile_1,
+    profile_2,
+    profile_3,
+    profile_4,
+    profile_1,
+    profile_3,
+  ];
+  const articleList = [
+    article_1,
+    article_2,
+    article_3,
+    article_1,
+    article_2,
+    article_3,
+  ];
+
+  const renderItem = ({ item, index }) => {
     return (
-      <LetterBoxContainer
-        onPress={() =>
-          navigation.navigate("LetterDrawer", {
-            editor: item.editor,
-            uploadDate: item.uploadDate,
-            title: item.title,
-          })
-        }
-      >
+      <LetterBoxContainer key={index} onPress={() => onOpenModal()}>
         <TextContainer>
           <Title>{item.title}</Title>
           <LetterInfoContainer>
-            <ProfileImg />
+            <ProfileImg source={profileList[index]} />
             <EditorName>{item.editor}</EditorName>
             <BlueCheckImg source={BlueCheck} />
             <Circle />
             <ElapsedTime>{item.elapsedTime}</ElapsedTime>
           </LetterInfoContainer>
         </TextContainer>
-        <LetterImg />
+        <LetterImg source={articleList[index]} />
       </LetterBoxContainer>
     );
   };
 
   return (
-    <FlatList
-      style={styles.List}
-      data={fetchedData}
-      renderItem={renderItem}
-      keyExtractor={(item) => item.title}
-    />
+    <FlatList style={styles.List} data={fetchedData} renderItem={renderItem} />
   );
 }
 

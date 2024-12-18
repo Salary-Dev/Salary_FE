@@ -27,6 +27,7 @@ import Toast from "../common/Toast";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { authToken } from "../Recoil/authToken";
 import { nicknameState } from "../Recoil/nicknameState";
+import { totalSeedState } from "../Recoil/totalSeedState";
 
 const GreenContainer = styled.View`
   background-color: ${colors.Secondary_100};
@@ -179,7 +180,7 @@ const ListTextContainer = styled.View`
 
 function MyPageScreen({ navigation, onLogOut }) {
   // const nickname = AsyncStorage.getItem("Nickname");
-  const [totalSeed, setTotalSeed] = useState(0);
+  const [totalSeed, setTotalSeed] = useRecoilState(totalSeedState);
   const [attendanceLogs, setAttendanceLogs] = useState([]);
 
   const isFocused = useIsFocused();

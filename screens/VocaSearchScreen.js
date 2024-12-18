@@ -14,6 +14,7 @@ import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { useRecoilValue } from "recoil";
 import { authToken } from "../Recoil/authToken";
 import { nicknameState } from "../Recoil/nicknameState";
+import { useNavigation } from "@react-navigation/native";
 
 const ViewContainer = styled.SafeAreaView`
   flex: 1;
@@ -204,13 +205,14 @@ const EmptyText = styled(fonts.Body2M)`
   text-align: center;
 `;
 
-function VocaSearchScreen({ navigation }) {
+function VocaSearchScreen() {
   const [isFocused, setIsFocused] = useState(false);
   const [isRecommendationDone, setIsRecommendationDone] = useState(false);
   const [recommendedList, setRecommendedList] = useState([]);
   const [inputText, setInputText] = useState("");
   const [keywordList, setKeywordList] = useState([]);
   const nickname = useRecoilValue(nicknameState);
+  const navigation = useNavigation();
 
   // 토큰 추가
   const token = useRecoilValue(authToken);

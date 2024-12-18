@@ -11,6 +11,11 @@ import { useRecoilValue } from "recoil";
 import { authToken } from "../../Recoil/authToken";
 import axios from "axios";
 import { BASE_URL } from "@env";
+import profile_1 from "../../assets/img/NewsLetterMainScreen/profile_1.png";
+import profile_2 from "../../assets/img/NewsLetterMainScreen/profile_2.png";
+import profile_3 from "../../assets/img/NewsLetterMainScreen/profile_3.png";
+import profile_4 from "../../assets/img/NewsLetterMainScreen/profile_4.png";
+import { nicknameState } from "../../Recoil/nicknameState";
 
 const SubscribingListWrapper = styled.View`
   padding: 14px 20px 8px;
@@ -48,10 +53,9 @@ const LetterBoxInner = styled.View`
 `;
 
 // 향후 Image로 바꿔야 함
-const EditorProfileImg = styled.View`
+const EditorProfileImg = styled.Image`
   width: 16px;
   height: 16px;
-  background-color: #d9d9d9;
   border-radius: 8px;
   margin-top: 2px;
 `;
@@ -88,12 +92,14 @@ function SubscribingLetterList() {
   const navigation = useNavigation();
   const token = useRecoilValue(authToken);
   const [fetchedData, setFetchedData] = useState([]); 
+  const nickname =useRecoilValue(nicknameState);
 
   const getSubscribingList = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/economy-letter/subscribe`, {
         headers: { Authorization: token },
       });
+      console.log("구독중인 경제레터 조회 api: ", res.data)
       setFetchedData(res.data);
     } catch (error) {
       console.log(error);
@@ -104,56 +110,30 @@ function SubscribingLetterList() {
     getSubscribingList();
   }, []);
 
-  const DATA = [
-    {
-      editor: "대단한 샐러리",
-      content: "중국 경제 둔화, 우리가 어떻게 대응해야 할까?",
-      isNew: true,
-      uploadDate: "2024.11.24",
-      articleList: [
-        "망고망고 으라차차",
-        "까리까리 까리의의의",
-        "마르모라아 으으오실",
-        "다시 걸어갈 수 있도록",
-        "끼룩끼룩 독수리의 여행",
-      ],
-    },
-    {
-      editor: "청경채",
-      content: "오늘은 기술주 vs 가치주, 어느 쪽이 유망한지....",
-      isNew: false,
-      uploadDate: "2024.12.02",
-      articleList: [
-        "망고망고 으라차차",
-        "까리까리 까리의의의",
-        "마르모라아 으으오실",
-        "다시 걸어갈 수 있도록",
-        "끼룩끼룩 독수리의 여행",
-      ],
-    },
-  ];
+  const profileList = [profile_1, profile_2, profile_3];
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({ item, index }) => {
     return (
-      <LetterBox
+      <LetterBox key={index}
         onPress={() =>
           navigation.navigate("LetterDrawer", {
             editor: item.editor,
             uploadDate: item.uploadDate,
-            title: item.title
+            title: item.title,
+            body: item.text
           })
         }
       >
         <LetterBoxInner>
           <View style={styles.RowView}>
-            <EditorProfileImg />
+            <EditorProfileImg source={profileList[0]}/>
             <TextContainer>
               <EditorNameContainer>
                 <EditorName>{item.editor}</EditorName>
                 <BlueCheckImg source={BlueCheck} />
               </EditorNameContainer>
-              <ContentText isNew={true}>
-                {item.isNew ? "새 레터가 도착했어요!" : item.content}
+              <ContentText >
+                {item.title}
               </ContentText>
             </TextContainer>
           </View>
@@ -172,12 +152,11 @@ function SubscribingLetterList() {
     >
       <SubscribingListWrapper>
         <SubscribingListContainer>
-          <Title>(닉네임)님이 구독 중인 경제 레터</Title>
+          <Title>{nickname}님이 구독 중인 경제 레터</Title>
           <FlatList
             style={styles.LetterBoxList}
             data={fetchedData}
             renderItem={renderItem}
-            keyExtractor={(item) => item.content}
             showsVerticalScrollIndicator={false}
           />
         </SubscribingListContainer>

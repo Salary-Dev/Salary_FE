@@ -334,8 +334,7 @@ function HomeScreen() {
           // 중복 처리되어서는 안됨!!
         }
         if (!isAnimationVisible) {
-          setAnimationVisible(true);
-          setTimeout(() => animationRef.current?.play(), 0); // 즉시 재생
+          triggerAnimation();
         }
         // navigation.navigate("BottomTab"); 이거 필요한가?
       } catch (error) {
@@ -388,8 +387,7 @@ function HomeScreen() {
           setAttendanceState((prev) => prev + 1);
         }
         if (!isAnimationVisible) {
-          setAnimationVisible(true);
-          setTimeout(() => animationRef.current?.play(), 0); // 즉시 재생
+          triggerAnimation();
         }
       } catch (error) {
         console.log(error);
@@ -490,24 +488,19 @@ function HomeScreen() {
   const [isAnimationVisible, setAnimationVisible] = useState(false); // 애니메이션 표시 상태
   const animationRef = useRef(null); // Lottie 애니메이션 참조
 
-  // const triggerAnimation = () => {
-  //   console.log("triggerAnimation called");
+  const triggerAnimation = () => {
+    console.log("triggerAnimation called");
 
-  //   if (isAnimationVisible) return;
-  //   // ScrollView가 렌더링될 때까지 강제로 대기 후 스크롤
-  //   // if (scrollViewRef.current) {
-  //   //   scrollViewRef.current.scrollTo({ y: 0, animated: true });
-  //   //   console.log("Scrolled to top");
-  //   // }
+    if (isAnimationVisible) return;
+    // ScrollView가 렌더링될 때까지 강제로 대기 후 스크롤
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollTo({ y: 0, animated: true });
+      console.log("Scrolled to top");
+    }
 
-  //   setAnimationVisible(true);
-  //   // animationRef.current?.play(); // 수동 재생 추가
-
-  //   setTimeout(() => {
-  //     setAnimationVisible(false);
-  //     console.log("Animation forced to stop");
-  //   }, 10000);
-  // };
+    setAnimationVisible(true);
+    animationRef.current?.play(); // 수동 재생 추가
+  };
 
   const handleAnimationFinish = () => {
     setAnimationVisible(false); // 애니메이션 숨김

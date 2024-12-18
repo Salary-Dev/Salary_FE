@@ -17,6 +17,9 @@ import { todayTrendSelector } from "../Recoil/todayAttendanceDetail";
 import { todayAttendanceState } from "../Recoil/todayAttendanceState";
 import DoneEventEmitter from "../events/DoneEventEmitter";
 import * as Haptics from "expo-haptics";
+import { Audio } from "expo-av";
+import ErrorSound from "../assets/sounds/ErrorSound.mp3";
+import SuccessSound from "../assets/sounds/SuccessSound.mp3";
 
 const ViewContainer = styled.SafeAreaView`
   background-color: white;
@@ -255,6 +258,25 @@ function TodayTrendQuizScreen() {
     setAnswersState(updatedAnswersState);
   };
 
+  // 소리 추가가
+  const [sound, setSound] = useState();
+
+  async function playSound(type) {
+    const { sound } = await Audio.Sound.createAsync(
+      type // 로컬 사운드 파일
+    );
+    setSound(sound);
+    await sound.playAsync();
+  }
+
+  useEffect(() => {
+    return sound
+      ? () => {
+          sound.unloadAsync();
+        }
+      : undefined;
+  }, [sound]);
+
   const onSubmitHandler = () => {
     // 무언가 데이터를 처리해서...
     // 모달 띄우기
@@ -264,8 +286,10 @@ function TodayTrendQuizScreen() {
     );
     if (isSucceeded) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      playSound(SuccessSound);
     } else {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+      playSound(ErrorSound);
     }
   };
 

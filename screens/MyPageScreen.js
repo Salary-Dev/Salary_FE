@@ -355,7 +355,7 @@ function MyPageScreen({ navigation, onLogOut }) {
               color={"#a0a0a0"}
             ></Ionicons>
           </ListItem> */}
-          <ListItem onPress={() => openModal()}>
+          <ListItem onPress={() => navigation.navigate("AppInfo")}>
             <ListTextContainer>
               <Ionicons
                 name="reader-outline"

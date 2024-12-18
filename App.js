@@ -46,6 +46,7 @@ import CustomDrawer from "./components/NewsLetterMainScreen/CustomDrawer";
 import "./gesture-handler";
 import NavLetterActiveIcn from "./assets/img/nav/Nav_LetterActive.png";
 import NavLetterIcn from "./assets/img/nav/Nav_Letter.png";
+import AppInfoScreen from "./screens/AppInfoScreen";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -452,6 +453,13 @@ export default function App() {
               <Stack.Screen
                 name="LetterDrawer"
                 component={DrawerNavigator}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="AppInfo"
+                component={AppInfoScreen}
                 options={{
                   headerShown: false,
                 }}

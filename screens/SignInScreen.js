@@ -1,6 +1,6 @@
 import styled from "styled-components/native";
 import { StatusBar } from "expo-status-bar";
-import { Pressable, TouchableOpacity } from "react-native";
+import { Pressable, TouchableOpacity, Alert, Platform } from "react-native";
 import { useRef, useState, useEffect } from "react";
 
 import SignInCharacter from "../assets/img/signInScreen/SignInCharacter.png";
@@ -123,7 +123,6 @@ const ArrowBtnWrapper = styled.Pressable`
   height: 41px;
   width: 32px;
   margin-top: 80px;
-  
 `;
 
 const ArrowBtnImg = styled.Image`
@@ -284,7 +283,12 @@ function SignInScreen({ onEnter, navigation }) {
             <IdLoginBtn onPress={() => setIsIdLogin(true)}>
               <IdLoginBtnText>ID로 로그인하기</IdLoginBtnText>
             </IdLoginBtn>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                if (Platform.OS === "ios")
+                  Alert.alert("구글로그인", "준비 중인 서비스입니다.");
+              }}
+            >
               <GoogleBtn source={GoogleLoginBtn} />
             </TouchableOpacity>
           </LoginBtnContainer>
@@ -296,11 +300,11 @@ function SignInScreen({ onEnter, navigation }) {
           </SignUpBtnContainer>
         </>
       ) : (
-        <><ArrowBtnWrapper onPress={() => setIsIdLogin(false)}>
-              <ArrowBtnImg source={ArrowBtn} />
-            </ArrowBtnWrapper>
+        <>
+          <ArrowBtnWrapper onPress={() => setIsIdLogin(false)}>
+            <ArrowBtnImg source={ArrowBtn} />
+          </ArrowBtnWrapper>
           <IdLoginTitleContainer>
-            
             <IdLoginTitle>로그인</IdLoginTitle>
             <IdLoginTitle_ShadowImage source={SignInText_SALARY} />
           </IdLoginTitleContainer>

@@ -214,8 +214,6 @@ function VocaSearchScreen() {
   const nickname = useRecoilValue(nicknameState);
   const navigation = useNavigation();
 
-  const navigation = useNavigation();
-
   // 토큰 추가
   const token = useRecoilValue(authToken);
   // console.log("단어검색에서 토큰값: ", token);

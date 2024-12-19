@@ -30,7 +30,6 @@ const ProfileImg = styled.Image`
   width: 26px;
   height: 26px;
   border-radius: 18px;
-  
 `;
 
 const EditorInfo_Middle = styled.View`
@@ -74,7 +73,7 @@ const LetterBody = styled.Text`
   padding: 0px 10px;
   color: ${colors.Grayscale_100};
   font-family: Inter;
-  font-size: 20px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 600;
   line-height: 30px;
@@ -94,7 +93,7 @@ function NewsLetterArticleScreen({ navigation, route }) {
     <ViewContainer>
       <LetterHeader>
         <EditorInfoContainer>
-          <ProfileImg source={profile_1}/>
+          <ProfileImg source={profile_1} />
           <EditorInfo_Middle>
             <EditorName>{route.params.editor}</EditorName>
             <UploadDate>{route.params.uploadDate}</UploadDate>
@@ -105,7 +104,7 @@ function NewsLetterArticleScreen({ navigation, route }) {
           <MoreLetterImg source={Hamburger} />
         </Pressable>
       </LetterHeader>
-      <LetterBodyImg source={article_1}/>
+      <LetterBodyImg source={article_1} />
       <LetterBodyWrapper>
         <LetterBody>{route.params.body}</LetterBody>
       </LetterBodyWrapper>

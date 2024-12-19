@@ -100,9 +100,9 @@ function TodaySalaryEdu_Modal({ closeModal, fetchBookMarkState }) {
   // 단어학습, 트렌드 퀴즈 모두 공통으로 적용
   const handleNavigateHome = () => {
     closeModal();
-    setTimeout(() => {
-      navigation.goBack();
-    }, 300);
+    // setTimeout(() => {
+    navigation.goBack();
+    // }, 300);
   };
 
   const navigation = useNavigation();

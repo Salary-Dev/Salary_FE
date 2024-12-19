@@ -11,6 +11,7 @@ import { StyleSheet, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import ArrowBtn from "../../assets/img/signUpScreen/ArrowBtn.png";
+import Profile1 from "../../assets/img/NewsLetterMainScreen/profile_1.png";
 
 const EditorInfoContainer = styled.View`
   flex-direction: row;
@@ -19,11 +20,13 @@ const EditorInfoContainer = styled.View`
   gap: 10px;
 `;
 
-const ProfileImg = styled.View`
+const ProfileImg = styled.Image`
   width: 26px;
   height: 26px;
   border-radius: 18px;
   background-color: #d9d9d9;
+
+  resize-mode: contain;
 `;
 
 const TextContainer = styled.View`
@@ -67,10 +70,7 @@ function CustomDrawer({ editor, articleList, ...props }) {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar style="dark" />
-      <DrawerContentScrollView
-        {...props}
-        contentContainerStyle={{}}
-      >
+      <DrawerContentScrollView {...props} contentContainerStyle={{}}>
         <LinearGradient
           style={styles.LinearGradient}
           start={{ x: 0.0, y: 0.0 }}
@@ -78,7 +78,7 @@ function CustomDrawer({ editor, articleList, ...props }) {
           colors={["#d3ff4e", "#97f764"]}
         >
           <EditorInfoContainer>
-            <ProfileImg />
+            <ProfileImg source={Profile1} />
             <TextContainer>
               <EditorName>{editor}</EditorName>
               <SubText>시장 분석과 트렌드를 쉽고 간결하게 전달합니다.</SubText>
@@ -93,7 +93,7 @@ function CustomDrawer({ editor, articleList, ...props }) {
             label={({ focused, color }) => (
               <DrawerListItem>
                 <DrawerListItemText>{item}</DrawerListItemText>
-                <ArrowBtnImg source={ArrowBtn}/>
+                <ArrowBtnImg source={ArrowBtn} />
               </DrawerListItem>
             )}
           />

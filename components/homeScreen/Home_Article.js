@@ -13,6 +13,8 @@ import DoneEventEmitter from "../../events/DoneEventEmitter";
 import { useRecoilState } from "recoil";
 import { todayAttendanceState } from "../../Recoil/todayAttendanceState";
 import axios from "axios";
+import { BASE_URL } from "@env";
+import { authToken } from "../../Recoil/authToken";
 
 const Container = styled.View`
   flex: 1;
@@ -56,6 +58,7 @@ function Home_Article({ setNewsDone }) {
   const [articleState, setArticleState] = useRecoilState(todayArticleSelector);
   const [attendanceState, setAttendanceState] =
     useRecoilState(todayAttendanceState);
+  const token = useRecoilValue(authToken);
 
   async function postAritcleAttendance() {
     try {

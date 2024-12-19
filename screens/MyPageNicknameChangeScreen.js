@@ -50,7 +50,7 @@ const Input = styled.TextInput`
   height: 40px;
   padding: 0px 22px;
   justify-content: center;
-  
+
   vertical-align: middle;
   line-height: 14px;
 
@@ -82,9 +82,11 @@ function MyPageNicknameChangeScreen() {
   console.log(token);
 
   const openModal = () => {
-    setModalVisible(true)
-    setTimeout(() => {setModalVisible(false)}, 2000)
-  }
+    setModalVisible(true);
+    setTimeout(() => {
+      setModalVisible(false);
+    }, 2000);
+  };
 
   const handleNicknameChange = async () => {
     try {
@@ -118,7 +120,7 @@ function MyPageNicknameChangeScreen() {
           >
             <Toast text="닉네임 수정이 완료되었습니다." />
           </Modal>
-          <Title>닉네임 수정</Title>
+          <Title>개인정보 수정</Title>
           <View
             style={{
               width: "100%",

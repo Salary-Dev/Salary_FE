@@ -346,7 +346,8 @@ function TodayTrendQuizScreen() {
   };
 
   const handleFinishStudy = () => {
-    // navigation.navigate("BottomTab"); 이거 필요한가?
+    // navigation.navigate("BottomTab");
+    // 이거 필요한가?
     DoneEventEmitter.emit("mainEvent");
     handleTrendDone(); // 데이터는 여기서 처리
     console.log("이벤트 emit");

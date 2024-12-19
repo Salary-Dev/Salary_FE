@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   },
   animation: {
     width: 300,
-    height: 300,
+    height: 500,
   },
 });
 

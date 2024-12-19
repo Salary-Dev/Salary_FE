@@ -190,17 +190,18 @@ function TodayTrendQuizScreen() {
   useEffect(() => {
     const checkAndFetchData = async () => {
       try {
-        const lastFetchedDate = await AsyncStorage.getItem("lastFetchedDate");
+        // const lastFetchedDate = await AsyncStorage.getItem("lastFetchedDate");
 
-        if (lastFetchedDate !== getKoreaFormattedDate()) {
-          fetchTrendQuizData();
-        } else {
-          console.log("오늘은 이미 데이터를 불러왔습니다.");
-          const existingTrendQuizData = JSON.parse(
-            await AsyncStorage.getItem("todayTrendQuizData")
-          );
-          setTrendQuizData(existingTrendQuizData);
-        }
+        // if (lastFetchedDate !== getKoreaFormattedDate()) {
+        fetchTrendQuizData();
+        // } }
+        // else {
+        //   console.log("오늘은 이미 데이터를 불러왔습니다.");
+        //   const existingTrendQuizData = JSON.parse(
+        //     await AsyncStorage.getItem("todayTrendQuizData")
+        //   );
+        //   setTrendQuizData(existingTrendQuizData);
+        // }
       } catch (error) {
         console.log(error);
       }

@@ -263,7 +263,7 @@ function HomeScreen() {
 
     if (isFocusedRef.current) {
       console.log(`Event processed immediately: ${type}`, data);
-      if (eventQueue.current.length >= 0) triggerAnimation();
+      if (eventQueue.current.length >= 0) triggerAnimation({ news: "not" });
     } else {
       // 포커스 상태가 아니면 큐에 넣는다.
       console.log(`Event queued: ${type}`, data);
@@ -291,7 +291,7 @@ function HomeScreen() {
     const processQueue = () => {
       if (eventQueue.current.length > 0) {
         console.log("Processing queued events...");
-        triggerAnimation(); // 큐 처리 중 애니메이션 실행
+        triggerAnimation({ news: "not" }); // 큐 처리 중 애니메이션 실행
         eventQueue.current = []; // 큐 초기화
       } else {
         console.log("No events in the queue.");
@@ -324,7 +324,8 @@ function HomeScreen() {
   const [isAnimationVisible, setAnimationVisible] = useState(false); // 애니메이션 표시 상태
   const appState = useRef(AppState.currentState); // 현재 앱 상태 저장
 
-  const triggerAnimation = () => {
+  const triggerAnimation = ({ news }) => {
+    console.log("news인가", news);
     if (isAnimationVisible) {
       console.log("Animation is already visible, skipping...");
       return; // 이미 실행 중이라면 중복 실행 방지
@@ -332,7 +333,7 @@ function HomeScreen() {
 
     console.log("triggerAnimation called");
 
-    if (scrollViewRef.current) {
+    if (scrollViewRef.current && news !== "news") {
       scrollViewRef.current.scrollTo({ y: 0, animated: true });
       console.log("Scrolled to top");
     }
@@ -362,7 +363,7 @@ function HomeScreen() {
       console.log("App has come to the foreground!");
       if (newsDone) {
         console.log("News animation condition met. Triggering animation...");
-        triggerAnimation();
+        triggerAnimation({ news: "news" });
         setNewsDone(false); // 애니메이션 실행 후 상태 리셋
       }
     }

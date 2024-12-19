@@ -64,6 +64,7 @@ function Home_TrendQuiz() {
       const existingTrendQuizData = JSON.parse(
         await AsyncStorage.getItem("todayTrendQuizData")
       );
+      console.log("트렐ㄴ드퀴즈 해설: ", existingTrendQuizData);
       setTrendQuizData(existingTrendQuizData);
     }
 

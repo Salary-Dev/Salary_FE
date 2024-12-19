@@ -91,16 +91,18 @@ const RightArrowImg = styled.Image`
 function SubscribingLetterList() {
   const navigation = useNavigation();
   const token = useRecoilValue(authToken);
-  const [fetchedData, setFetchedData] = useState([]); 
-  const nickname =useRecoilValue(nicknameState);
+  const [fetchedData, setFetchedData] = useState([]);
+  const nickname = useRecoilValue(nicknameState);
 
   const getSubscribingList = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/economy-letter/subscribe`, {
         headers: { Authorization: token },
       });
-      console.log("구독중인 경제레터 조회 api: ", res.data)
-      setFetchedData(res.data);
+      console.log("구독중인 경제레터 조회 api: ", res.data);
+      // text가 null이 아닌 데이터만 필터링
+      const filteredData = res.data.filter((item) => item.text !== "null");
+      setFetchedData(filteredData);
     } catch (error) {
       console.log(error);
     }
@@ -114,27 +116,26 @@ function SubscribingLetterList() {
 
   const renderItem = ({ item, index }) => {
     return (
-      <LetterBox key={index}
+      <LetterBox
+        key={index}
         onPress={() =>
           navigation.navigate("LetterDrawer", {
             editor: item.editor,
             uploadDate: item.uploadDate,
             title: item.title,
-            body: item.text
+            body: item.text,
           })
         }
       >
         <LetterBoxInner>
           <View style={styles.RowView}>
-            <EditorProfileImg source={profileList[0]}/>
+            <EditorProfileImg source={profileList[0]} />
             <TextContainer>
               <EditorNameContainer>
                 <EditorName>{item.editor}</EditorName>
                 <BlueCheckImg source={BlueCheck} />
               </EditorNameContainer>
-              <ContentText >
-                {item.title}
-              </ContentText>
+              <ContentText>{item.title}</ContentText>
             </TextContainer>
           </View>
           <RightArrowImg source={ArrowBtn} />

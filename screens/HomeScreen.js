@@ -178,27 +178,27 @@ function HomeScreen() {
     const checkAndFetchData = async () => {
       // await AsyncStorage.removeItem("todaySalaryData"); 디버깅
       try {
-        const lastFetchedData = await AsyncStorage.getItem("todaySalaryData");
-        const parsedLastFetchedData = JSON.parse(lastFetchedData);
-        if (
-          !parsedLastFetchedData ||
-          parsedLastFetchedData.lastFetchedDate !== getKoreaFormattedDate()
-        ) {
-          console.log(
-            "이전에 패치된 데이터가 없거나 지난 날짜라서 새로 단어 id를 받아옴"
+        // const lastFetchedData = await AsyncStorage.getItem("todaySalaryData");
+        // const parsedLastFetchedData = JSON.parse(lastFetchedData);
+        // if (
+        //   !parsedLastFetchedData ||
+        //   parsedLastFetchedData.lastFetchedDate !== getKoreaFormattedDate()
+        // ) {
+        //   console.log(
+        //     "이전에 패치된 데이터가 없거나 지난 날짜라서 새로 단어 id를 받아옴"
+        //   );
+        fetchTodayWordId(token).then((fetchedData) => {
+          fetchTodayWordData({ ...fetchedData, token: token }).then(
+            (fetchedWordData) => {
+              setTodaySalary(fetchedWordData);
+            }
           );
-          fetchTodayWordId(token).then((fetchedData) => {
-            fetchTodayWordData({ ...fetchedData, token: token }).then(
-              (fetchedWordData) => {
-                setTodaySalary(fetchedWordData);
-              }
-            );
-          });
-        } else {
-          // 이미 데이터가 asyncStorage에 저장된 상태이므로 전역 상태값의 초기값으로 지정해줌
-          setTodaySalary(parsedLastFetchedData);
-          console.log("이미 word Id를 받아옴");
-        }
+        });
+        // } else {
+        //   // 이미 데이터가 asyncStorage에 저장된 상태이므로 전역 상태값의 초기값으로 지정해줌
+        //   setTodaySalary(parsedLastFetchedData);
+        //   console.log("이미 word Id를 받아옴");
+        // }
       } catch (error) {
         console.log(error);
       }
@@ -258,103 +258,83 @@ function HomeScreen() {
   // salaryDone, trendDone, newsDone
 
   ///// 1. 오늘의 샐러리
-  const handleSalaryDone = async (data) => {
-    console.log("handleSalaryDone called with data:", data);
-
-    const fetchState = async () => {
-      try {
-        const res = await axios.post(
-          `${BASE_URL}/today-word/update-status?word_id=${todaySalary.word_id}`,
-          {},
-          { headers: { Authorization: token } }
-        );
-        console.log("단어 학습 완료 api post", res.status);
-
-        const resSeed = await axios.patch(
-          `${BASE_URL}/seed/update`,
-          {
-            seed_earned: 5,
-            seed_used: 0,
-          },
-          { headers: { Authorization: token } }
-        );
-        console.log("시드 patch", resSeed.data.status);
-
-        if (!wordState) {
-          console.log("Updating wordState and attendanceState");
-          setTodayWordState(true);
-          setAttendanceState((prev) => prev + 3); // attendance state에 1을 더해주어 알맞게 상태 관리
-          // 중복 처리되어서는 안됨!!
-        }
-
-        if (!isAnimationVisible) {
-          // setAnimationVisible(true);
-          setTimeout(() => {
-            setAnimationVisible(true);
-          }, 1500);
-          scrollViewRef.current.scrollTo({ y: 0, animated: true });
-          console.log("Scrolled to top");
-          // setTimeout(() => animationRef.current?.play(), 0); // 즉시 재생
-        }
-
-        return true;
-      } catch (error) {
-        console.log(error);
-        return false;
-      }
-    };
-
+  const handleSalaryDone = (data) => {
     if (isFocusedRef.current) {
-      fetchState();
-      console.log("Salary Event Processed Immediately:", data);
+      if (!isAnimationVisible) {
+        setTimeout(() => {
+          triggerAnimation();
+        }, 500);
+      }
+      console.log("샐러리  된 거 ㄷ처ㅣㄹ해쥼!");
+      console.log("샐러ㅣ Event Processed Immediately:", data);
     } else {
-      console.log("Salary Event Queued:", data);
+      console.log("샐러리 Event Queued:", data);
       eventQueue.current.push({ data, type: "salaryDone" });
+      console.log("저장된 이벤트 : ", eventQueue.current.length);
     }
   };
+  // const handleSalaryDone = async (data) => {
+  //   console.log("handleSalaryDone called with data:", data);
+
+  //   const fetchState = async () => {
+  //     try {
+  //       const res = await axios.post(
+  //         `${BASE_URL}/today-word/update-status?word_id=${todaySalary.word_id}`,
+  //         {},
+  //         { headers: { Authorization: token } }
+  //       );
+  //       console.log("단어 학습 완료 api post", res.status);
+
+  //       const resSeed = await axios.patch(
+  //         `${BASE_URL}/seed/update`,
+  //         {
+  //           seed_earned: 5,
+  //           seed_used: 0,
+  //         },
+  //         { headers: { Authorization: token } }
+  //       );
+  //       console.log("시드 patch", resSeed.data.status);
+
+  //       if (!wordState) {
+  //         console.log("Updating wordState and attendanceState");
+  //         setTodayWordState(true);
+  //         setAttendanceState((prev) => prev + 3); // attendance state에 1을 더해주어 알맞게 상태 관리
+  //         // 중복 처리되어서는 안됨!!
+  //       }
+
+  //       if (!isAnimationVisible) {
+  //         // setAnimationVisible(true);
+  //         setTimeout(() => {
+  //           setAnimationVisible(true);
+  //         }, 1500);
+  //         scrollViewRef.current.scrollTo({ y: 0, animated: true });
+  //         console.log("Scrolled to top");
+  //         // setTimeout(() => animationRef.current?.play(), 0); // 즉시 재생
+  //       }
+
+  //       return true;
+  //     } catch (error) {
+  //       console.log(error);
+  //       return false;
+  //     }
+  //   };
+
+  //   if (isFocusedRef.current) {
+  //     fetchState();
+  //     console.log("Salary Event Processed Immediately:", data);
+  //   } else {
+  //     console.log("Salary Event Queued:", data);
+  //     eventQueue.current.push({ data, type: "salaryDone" });
+  //   }
+  // };
 
   /// 2. 트렌드 퀴즈 done
-  const handleTrendDone = async (data) => {
-    const fetchState = async () => {
-      try {
-        console.log("트렌드퀴즈 이벤트 객체 받음");
-        const res = await axios.post(
-          `${BASE_URL}/trend-quiz/update-status?trend=${true}`,
-          {},
-          {
-            headers: {
-              Authorization: token,
-            },
-          }
-        );
-        const resSeed = await axios.patch(
-          `${BASE_URL}/seed/update`,
-          {
-            seed_earned: 5,
-            seed_used: 0,
-          },
-          { headers: { Authorization: token } }
-        );
-        console.log("시드 patch", resSeed.data.status);
-        if (!trendState) {
-          setTrendState(true);
-          setAttendanceState((prev) => prev + 1); // attendance state에 1을 더해주어 알맞게 상태 관리
-          // 중복 처리되어서는 안됨!!
-        }
-        if (!isAnimationVisible) {
-          // triggerAnimation();
-          setAnimationVisible(true);
-          scrollViewRef.current.scrollTo({ y: 0, animated: true });
-          console.log("Scrolled to top");
-        }
-        // navigation.navigate("BottomTab"); 이거 필요한가?
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
+  const handleTrendDone = (data) => {
     if (isFocusedRef.current) {
-      fetchState();
+      if (!isAnimationVisible) {
+        triggerAnimation();
+      }
+      console.log("트렌드 퀴즈  된 거 ㄷ처ㅣㄹ해쥼!");
       console.log("Trend Event Processed Immediately:", data);
     } else {
       console.log("Trend Event Queued:", data);
@@ -362,6 +342,54 @@ function HomeScreen() {
       console.log("저장된 이벤트 : ", eventQueue.current.length);
     }
   };
+  // const handleTrendDone = async (data) => {
+  //   const fetchState = async () => {
+  //     try {
+  //       console.log("트렌드퀴즈 이벤트 객체 받음");
+  //       const res = await axios.post(
+  //         `${BASE_URL}/trend-quiz/update-status?trend=${true}`,
+  //         {},
+  //         {
+  //           headers: {
+  //             Authorization: token,
+  //           },
+  //         }
+  //       );
+  //       const resSeed = await axios.patch(
+  //         `${BASE_URL}/seed/update`,
+  //         {
+  //           seed_earned: 5,
+  //           seed_used: 0,
+  //         },
+  //         { headers: { Authorization: token } }
+  //       );
+  //       console.log("시드 patch", resSeed.data.status);
+  //       if (!trendState) {
+  //         setTrendState(true);
+  //         setAttendanceState((prev) => prev + 1); // attendance state에 1을 더해주어 알맞게 상태 관리
+  //         // 중복 처리되어서는 안됨!!
+  //       }
+  //       if (!isAnimationVisible) {
+  //         // triggerAnimation();
+  //         setAnimationVisible(true);
+  //         scrollViewRef.current.scrollTo({ y: 0, animated: true });
+  //         console.log("Scrolled to top");
+  //       }
+  //       // navigation.navigate("BottomTab"); 이거 필요한가?
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+
+  //   if (isFocusedRef.current) {
+  //     fetchState();
+  //     console.log("Trend Event Processed Immediately:", data);
+  //   } else {
+  //     console.log("Trend Event Queued:", data);
+  //     eventQueue.current.push({ data, type: "trendDone" });
+  //     console.log("저장된 이벤트 : ", eventQueue.current.length);
+  //   }
+  // };
 
   // if (!isFocusedRef.current) {
   //   console.log("Screen not focused. Triggering animation after delay.");
@@ -420,80 +448,58 @@ function HomeScreen() {
     }
   };
 
-  // 처리할 이벤트 이름들
-  // 각 이벤트의 핸들러
+  // 큐에 있으면 애니메이션을 바로 튼다
+  const handleEvent = (data, type) => {
+    if (isFocusedRef.current) {
+      console.log(`Event processed immediately: ${type}`, data);
+      // processMainQueue(); // 바로 처리
+      if (eventQueue.current.length >= 0) triggerAnimation();
+    } else {
+      console.log(`Event queued: ${type}`, data);
+      eventQueue.current.push({ data, type });
+    }
+  };
 
   // 초기 마운트 시 리스너 등록
   useEffect(() => {
-    const handlers = {
-      trendDone: handleTrendDone,
-      salaryDone: handleSalaryDone,
-      newsDone: handleNewsDone,
-    };
+    const mainHandler = (type, data) => handleEvent(data, type);
 
-    console.log("리스너 등록");
+    console.log("Main event listener registered");
 
-    // 각 이벤트에 대해 리스너 등록
-    Object.entries(handlers).forEach(([eventName, handler]) => {
-      DoneEventEmitter.addListener(eventName, handler);
-    });
+    DoneEventEmitter.addListener("mainEvent", mainHandler);
 
-    // 클린업: 각 이벤트 리스너 제거
     return () => {
-      Object.entries(handlers).forEach(([eventName, handler]) => {
-        DoneEventEmitter.removeListener(eventName, handler);
-      });
+      console.log("Main event listener removed");
+      DoneEventEmitter.removeListener("mainEvent", mainHandler);
     };
   }, []);
 
   useEffect(() => {
+    const processQueue = () => {
+      if (eventQueue.current.length > 0) {
+        console.log("Processing queued events...");
+        triggerAnimation(); // 큐 처리 중 애니메이션 실행
+        eventQueue.current = []; // 큐 초기화
+      } else {
+        console.log("No events in the queue.");
+      }
+    };
+
     const onFocus = () => {
       isFocusedRef.current = true;
-      console.log("Screen is focused. Processing queued events...");
-
-      // 큐에 저장된 이벤트 처리
-      const processQueue = async () => {
-        if (eventQueue.current.length > 0) {
-          console.log("Processing queued events...");
-
-          // 이벤트를 순차적으로 처리
-          while (eventQueue.current.length > 0) {
-            console.log("while문 시작");
-            const { data, type } = eventQueue.current.shift();
-            console.log(`Processing Event: ${type}`, data);
-
-            switch (type) {
-              case "trendDone":
-                await handleTrendDone(data); // async 처리
-                break;
-              case "salaryDone":
-                await handleSalaryDone(data); // async 처리
-                break;
-              case "newsDone":
-                await handleNewsDone(data); // async 처리
-                break;
-              default:
-                console.warn(`Unknown event type: ${type}`);
-            }
-            console.log("while문 끝");
-          }
-        }
-      };
-
-      processQueue();
+      console.log("Screen is focused.");
+      processQueue(); // 포커스 시 큐 처리
     };
 
     const onBlur = () => {
       isFocusedRef.current = false;
-      setAnimationVisible(false);
-      console.log("Screen is unfocused. Events will be queued.");
+      setAnimationVisible(false); // 포커스 해제 시 애니메이션 숨김
+      console.log("Screen is unfocused.");
     };
 
-    // focus/blur 리스너 등록
     const unsubscribeFocus = navigation.addListener("focus", onFocus);
     const unsubscribeBlur = navigation.addListener("blur", onBlur);
 
-    // 클린업: focus/blur 리스너 제거
     return () => {
       unsubscribeFocus();
       unsubscribeBlur();
@@ -508,20 +514,21 @@ function HomeScreen() {
   const triggerAnimation = () => {
     console.log("triggerAnimation called");
 
-    setAnimationVisible(true);
-
-    if (isAnimationVisible) return;
-    // ScrollView가 렌더링될 때까지 강제로 대기 후 스크롤
     if (scrollViewRef.current) {
       scrollViewRef.current.scrollTo({ y: 0, animated: true });
       console.log("Scrolled to top");
     }
+    // setTimeout(() => animationRef.current?.play(), 0); // 즉시 재생
+    setAnimationVisible(true);
 
-    animationRef.current?.play(); // 수동 재생 추가
+    setTimeout(() => {
+      setAnimationVisible(false);
+      console.log("4초가 지나 false로");
+    }, 4000);
   };
 
   const handleAnimationFinish = () => {
-    setAnimationVisible(false); // 애니메이션 숨김
+    // setAnimationVisible(false); // 애니메이션 숨김
   };
 
   useEffect(() => {
@@ -533,7 +540,7 @@ function HomeScreen() {
       <SafeAreaView style={styles.rootScreen}>
         <Home_Confetti
           isVisible={isAnimationVisible}
-          onFinish={handleAnimationFinish}
+          onFinish={() => console.log("Animation finished")}
         />
         <ScrollView
           ref={scrollViewRef}

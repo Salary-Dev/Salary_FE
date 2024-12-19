@@ -229,8 +229,10 @@ const GoToNewsContainer = styled.View`
 // route.params.type === "todaySalary" 로 오늘의 단어 학습 식별
 // route.params.type === "bookmark"로 단어장 통해 들어온 화면 식별
 function TodaySalaryEduScreen({ route }) {
+  const setAttendanceState = useSetRecoilState(todayAttendanceState);
   // 전역으로 오늘의 todaysalary 학습 상태를 관리
   const wordState = useRecoilValue(todayWordSelector);
+  const setTodayWordState = useSetRecoilState(todayWordSelector);
 
   // 전역 오늘의 샐러리 단어 데이터를 사용
   const todaySalary = useRecoilValue(todaySalaryContent);
@@ -305,29 +307,29 @@ function TodaySalaryEduScreen({ route }) {
     // }
   }
 
-  // async function postWordAttendance() {
-  //   try {
-  //     const res = await axios.post(
-  //       `${BASE_URL}/today-word/update-status?word_id=${wordData.word_id}`,
-  //       {},
-  //       { headers: { Authorization: token } }
-  //     );
-  //     console.log("단어 학습 완료 api post", res.status);
-  //     const resSeed = await axios.patch(
-  //       `${BASE_URL}/seed/update`,
-  //       {
-  //         seed_earned: 5,
-  //         seed_used: 0,
-  //       },
-  //       { headers: { Authorization: token } }
-  //     );
-  //     console.log("시드 patch", resSeed.data.status);
-  //     return true;
-  //   } catch (error) {
-  //     console.log(error);
-  //     return false;
-  //   }
-  // }
+  async function postWordAttendance() {
+    try {
+      const res = await axios.post(
+        `${BASE_URL}/today-word/update-status?word_id=${wordData.word_id}`,
+        {},
+        { headers: { Authorization: token } }
+      );
+      console.log("단어 학습 완료 api post", res.status);
+      const resSeed = await axios.patch(
+        `${BASE_URL}/seed/update`,
+        {
+          seed_earned: 5,
+          seed_used: 0,
+        },
+        { headers: { Authorization: token } }
+      );
+      console.log("시드 patch", resSeed.data.status);
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
 
   // 밑으로 새로고침시 API 호출하여 단어 학습 완료를 POST
   // 최초 1회만 실행되며. 이후에는 새로고침해도 핸들러 호출 X
@@ -335,17 +337,13 @@ function TodaySalaryEduScreen({ route }) {
     if (loading) return; // 중복 요청 방지
     setLoading(true);
 
-    if (!wordState) {
-      DoneEventEmitter.emit("salaryDone");
-      console.log("샐러리 학습 완료 이벤트 emit");
+    if (postWordAttendance() && !wordState) {
       setIsModalVisible(true); // 모달 상태 관리
+      DoneEventEmitter.emit("mainEvent");
+      postWordAttendance();
+      setTodayWordState(true); // 전역 상태 관리
+      setAttendanceState((prev) => prev + 3); // 3을 더해주어 salary done 표시
     }
-
-    // if (postWordAttendance() && !wordState) {
-    // postWordAttendance()
-    // setTodayWordState(true); // 전역 상태 관리
-    // setAttendanceState((prev) => prev + 3); // 3을 더해주어 salary done 표시
-    // }
   }
 
   useEffect(() => {

@@ -10,6 +10,9 @@ import {
   todayAttendanceDetail,
 } from "../../Recoil/todayAttendanceDetail";
 import DoneEventEmitter from "../../events/DoneEventEmitter";
+import { useRecoilState } from "recoil";
+import { todayAttendanceState } from "../../Recoil/todayAttendanceState";
+import axios from "axios";
 
 const Container = styled.View`
   flex: 1;
@@ -49,42 +52,44 @@ const DoneMarker = styled.Image`
   object-fit: cover;
 `;
 
-function Home_Article() {
-  // detailState 관리
-  const articleState = useRecoilValue(todayArticleSelector);
+function Home_Article({ setNewsDone }) {
+  const [articleState, setArticleState] = useRecoilState(todayArticleSelector);
+  const [attendanceState, setAttendanceState] =
+    useRecoilState(todayAttendanceState);
 
-  // async function postAritcleAttendance() {
-  //   try {
-  //     const res = await axios.post(
-  //       `${BASE_URL}/shorts/update-status?article=true`,
-  //       {},
-  //       {
-  //         headers: {
-  //           Authorization: token,
-  //         },
-  //       }
-  //     );
-  //     console.log("뉴스 학습 완료 api post", res.data.status);
-  //     const resSeed = await axios.patch(
-  //       `${BASE_URL}/seed/update`,
-  //       {
-  //         seed_earned: 5,
-  //         seed_used: 0,
-  //       },
-  //       { headers: { Authorization: token } }
-  //     );
-  //     console.log("시드 patch", resSeed.data.status);
-  //     return true;
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
+  async function postAritcleAttendance() {
+    try {
+      const res = await axios.post(
+        `${BASE_URL}/shorts/update-status?article=true`,
+        {},
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
+      console.log("뉴스 학습 완료 api post", res.data.status);
+      const resSeed = await axios.patch(
+        `${BASE_URL}/seed/update`,
+        {
+          seed_earned: 5,
+          seed_used: 0,
+        },
+        { headers: { Authorization: token } }
+      );
+      console.log("시드 patch", resSeed.data.status);
+      return true;
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   function handleDoneTodayArticle() {
-    // if (postAritcleAttendance() && !articleState) {
-    //   setArticleState(true); // 전역 상태
-    //   setAttendanceState((prev) => prev + 1);
-    // }
+    if (postAritcleAttendance() && !articleState) {
+      setNewsDone(true);
+      setArticleState(true); // 전역 상태
+      setAttendanceState((prev) => prev + 1);
+    }
     DoneEventEmitter.emit("newsDone");
     console.log("이벤트 emit");
   }

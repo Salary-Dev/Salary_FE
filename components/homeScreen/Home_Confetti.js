@@ -25,8 +25,7 @@ const Home_Confetti = ({ isVisible, onFinish }) => {
         source={require("../../assets/animations/Confetti.json")}
         loop={false}
         onAnimationFinish={() => {
-          console.log("Animation finished");
-          onFinish && setTimeout(onFinish, 100); // 100ms 지연 후 실행
+          console.log("Animation fnished");
         }}
         style={styles.animation}
       />

@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Image,
   Modal,
+  AppState,
   Platform,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
@@ -249,63 +250,17 @@ function HomeScreen() {
   //////////////////// 학습 상태를 focus 되면 반영하기 위한 핸들러
   const isFocusedRef = useRef(false); // 현재 focus 상태를 추적
   const eventQueue = useRef([]); // 이벤트를 큐로 저장
-  const [trendState, setTrendState] = useRecoilState(todayTrendSelector);
-  const [articleState, setArticleState] = useRecoilState(todayArticleSelector);
-  const wordState = useRecoilValue(todayWordSelector);
-  const setTodayWordState = useSetRecoilState(todayWordSelector);
-
-  ///// 3. 뉴스 done
-  const handleNewsDone = (data) => {
-    const fetchState = async () => {
-      try {
-        console.log("뉴스 이벤트 객체 받음");
-        const res = await axios.post(
-          `${BASE_URL}/shorts/update-status?article=true`,
-          {},
-          {
-            headers: {
-              Authorization: token,
-            },
-          }
-        );
-        const resSeed = await axios.patch(
-          `${BASE_URL}/seed/update`,
-          {
-            seed_earned: 5,
-            seed_used: 0,
-          },
-          { headers: { Authorization: token } }
-        );
-        console.log("시드 patch", resSeed.data.status);
-        if (!articleState) {
-          setArticleState(true); // 전역 상태
-          setAttendanceState((prev) => prev + 1);
-        }
-        if (!isAnimationVisible) {
-          // triggerAnimation();
-          setTimeout(() => {
-            setAnimationVisible(true);
-            scrollViewRef.current.scrollTo({ y: 0, animated: true });
-            console.log("Scrolled to top");
-          }, 7000);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    console.log("News Event Received:", data);
-
-    if (isFocusedRef.current) {
-      fetchState();
-      console.log("News Event Processed Immediately:", data);
-    } else {
-      console.log("News Event Queued:", data);
-      eventQueue.current.push({ data, type: "newsDone" });
-    }
-  };
+  const [newsDone, setNewsDone] = useState(false);
 
   // 큐에 있으면 애니메이션을 바로 튼다
   const handleEvent = (data, type) => {
+    if (isAnimationVisible) {
+      console.log(
+        `Skipping event because animation is already running: ${type}`
+      );
+      return; // 이미 애니메이션이 실행 중이라면 중복 처리 방지
+    }
+
     if (isFocusedRef.current) {
       console.log(`Event processed immediately: ${type}`, data);
       if (eventQueue.current.length >= 0) triggerAnimation();
@@ -367,8 +322,14 @@ function HomeScreen() {
   ////////////// 컨페티 관리
   const scrollViewRef = useRef(null);
   const [isAnimationVisible, setAnimationVisible] = useState(false); // 애니메이션 표시 상태
+  const appState = useRef(AppState.currentState); // 현재 앱 상태 저장
 
   const triggerAnimation = () => {
+    if (isAnimationVisible) {
+      console.log("Animation is already visible, skipping...");
+      return; // 이미 실행 중이라면 중복 실행 방지
+    }
+
     console.log("triggerAnimation called");
 
     if (scrollViewRef.current) {
@@ -388,13 +349,38 @@ function HomeScreen() {
     console.log("변경", isAnimationVisible);
   }, [isAnimationVisible]);
 
+  useEffect(() => {
+    console.log("뉴스 done 확인");
+  }, [newsDone]);
+
+  // 마지막 뉴스 관리
+  const handleAppStateChange = (nextAppState) => {
+    if (
+      appState.current.match(/inactive|background/) &&
+      nextAppState === "active"
+    ) {
+      console.log("App has come to the foreground!");
+      if (newsDone) {
+        console.log("News animation condition met. Triggering animation...");
+        triggerAnimation();
+        setNewsDone(false); // 애니메이션 실행 후 상태 리셋
+      }
+    }
+    appState.current = nextAppState;
+  };
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener(
+      "change",
+      handleAppStateChange
+    );
+    return () => subscription.remove(); // 리스너 제거
+  }, [newsDone]); // newsDone 상태를 의존성에 추가
+
   if (!loading)
     return (
       <SafeAreaView style={styles.rootScreen}>
-        <Home_Confetti
-          isVisible={isAnimationVisible}
-          onFinish={() => console.log("Animation finished")}
-        />
+        <Home_Confetti isVisible={isAnimationVisible} />
         <ScrollView
           ref={scrollViewRef}
           automaticallyAdjustContentInsets={false}
@@ -436,7 +422,7 @@ function HomeScreen() {
               <Home_TodaySalary />
               <Home_TrendQuiz />
               <Horizon />
-              <Home_Article />
+              <Home_Article setNewsDone={setNewsDone} />
             </ContentsContainer>
           </Shadow>
         </ScrollView>

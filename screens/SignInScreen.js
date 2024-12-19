@@ -285,8 +285,7 @@ function SignInScreen({ onEnter, navigation }) {
             </IdLoginBtn>
             <TouchableOpacity
               onPress={() => {
-                if (Platform.OS === "ios")
-                  Alert.alert("구글로그인", "준비 중인 서비스입니다.");
+                Alert.alert("구글로그인", "준비 중인 서비스입니다.");
               }}
             >
               <GoogleBtn source={GoogleLoginBtn} />
